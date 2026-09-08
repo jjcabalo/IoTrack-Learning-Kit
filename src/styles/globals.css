@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 1rem;
+    --background: oklch(0.99 0.005 250);
+    --foreground: oklch(0.15 0.02 260);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.15 0.02 260);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.15 0.02 260);
+    --primary: oklch(0.55 0.22 265);
+    --primary-foreground: oklch(0.99 0 0);
+    --secondary: oklch(0.96 0.01 250);
+    --secondary-foreground: oklch(0.2 0.03 260);
+    --muted: oklch(0.96 0.008 250);
+    --muted-foreground: oklch(0.5 0.02 260);
+    --accent: oklch(0.95 0.03 260);
+    --accent-foreground: oklch(0.2 0.03 260);
+    --destructive: oklch(0.6 0.24 27);
+    --destructive-foreground: oklch(0.99 0 0);
+    --border: oklch(0.92 0.01 255);
+    --input: oklch(0.92 0.01 255);
+    --ring: oklch(0.55 0.22 265);
+    --brand: oklch(0.6 0.22 265);
+    --brand-foreground: oklch(0.99 0 0);
+    --brand-2: oklch(0.72 0.18 190);
+    --accent-glow: oklch(0.78 0.18 320);
+    --gradient-hero: radial-gradient(ellipse at top, oklch(0.75 0.18 265 / 0.35), transparent 60%), radial-gradient(ellipse at bottom right, oklch(0.78 0.18 320 / 0.25), transparent 60%), radial-gradient(ellipse at bottom left, oklch(0.72 0.18 190 / 0.25), transparent 60%);
+    --gradient-brand: linear-gradient(135deg, oklch(0.6 0.22 265), oklch(0.7 0.2 320));
+    --gradient-cool: linear-gradient(135deg, oklch(0.72 0.18 190), oklch(0.6 0.22 265));
+    --shadow-glow: 0 20px 60px -20px oklch(0.55 0.22 265 / 0.5);
+    --shadow-soft: 0 10px 40px -20px oklch(0.2 0.05 260 / 0.25);
+  }
+
+  .dark {
+    --background: oklch(0.13 0.02 260);
+    --foreground: oklch(0.98 0.005 250);
+    --card: oklch(0.18 0.025 260);
+    --card-foreground: oklch(0.98 0.005 250);
+    --popover: oklch(0.18 0.025 260);
+    --popover-foreground: oklch(0.98 0.005 250);
+    --primary: oklch(0.72 0.18 265);
+    --primary-foreground: oklch(0.13 0.02 260);
+    --secondary: oklch(0.22 0.03 260);
+    --secondary-foreground: oklch(0.98 0.005 250);
+    --muted: oklch(0.22 0.03 260);
+    --muted-foreground: oklch(0.7 0.02 260);
+    --accent: oklch(0.25 0.05 265);
+    --accent-foreground: oklch(0.98 0.005 250);
+    --destructive: oklch(0.65 0.22 25);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 12%);
+    --ring: oklch(0.72 0.18 265);
+    --brand: oklch(0.72 0.18 265);
+    --brand-foreground: oklch(0.13 0.02 260);
+    --brand-2: oklch(0.78 0.16 190);
+    --accent-glow: oklch(0.75 0.2 320);
+    --gradient-hero: radial-gradient(ellipse at top, oklch(0.55 0.24 265 / 0.4), transparent 60%), radial-gradient(ellipse at bottom right, oklch(0.6 0.24 320 / 0.3), transparent 60%), radial-gradient(ellipse at bottom left, oklch(0.55 0.2 190 / 0.3), transparent 60%);
+    --shadow-glow: 0 20px 80px -20px oklch(0.72 0.22 265 / 0.6);
+    --shadow-soft: 0 10px 40px -20px oklch(0 0 0 / 0.5);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply font-sans antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-gradient-brand {
+    background-image: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .glass {
+    background-color: color-mix(in oklab, var(--background) 60%, transparent);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mask-fade-edges {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+}
