@@ -24,7 +24,7 @@ export function ThemeToggle() {
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.92 }}
       aria-label="Toggle theme"
-      className="grid h-10 w-10 place-items-center rounded-full glass shadow-soft"
+      className="grid h-10 w-10 place-items-center rounded-full glass shadow-soft text-foreground"
     >
       {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </motion.button>

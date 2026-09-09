@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IoTrack - Lessons + Robot Activities</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+.app{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+aside{background:#111827;color:#fff;padding:28px 22px;position:sticky;top:0;height:100vh}
+.brand{font-size:28px;font-weight:850}
+.brand span{color:#60a5fa}
+.tag{font-size:13px;line-height:1.55;color:#aab4c4;margin:8px 0 28px}
+.navtitle{font-size:11px;color:#7f8ca3;text-transform:uppercase;letter-spacing:.09em;font-weight:800;margin:22px 0 9px}
+.nav{padding:12px 13px;border-radius:11px;color:#d6deea;margin:6px 0;cursor:pointer;border:1px solid transparent}
+.nav:hover{background:rgba(255,255,255,.06)}
+.nav.active{background:rgba(96,165,250,.16);border-color:rgba(96,165,250,.25);color:#fff}
+main{padding:32px;max-width:1200px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.crumb{font-size:14px;color:#6f7a90}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;background:#ecfdf3;color:#15803d;border:1px solid #bbf7d0;font-size:13px;font-weight:800}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.14)}
+.page{display:none}
+.page.active{display:block}
+.hero{background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #dbeafe;border-radius:22px;padding:30px;box-shadow:0 12px 35px rgba(16,24,40,.08);margin-bottom:24px}
+.pill{display:inline-block;padding:7px 10px;border-radius:999px;background:#dbeafe;color:#2563eb;font-size:12px;font-weight:850;margin-bottom:14px}
+.hero h1{font-size:clamp(30px,5vw,46px);line-height:1.08;margin-bottom:13px}
+.hero p,.card p,.card li{font-size:15px;line-height:1.75;color:#6f7a90}
+.layout{display:grid;grid-template-columns:1.6fr .85fr;gap:24px}
+.card{background:#fff;border:1px solid #e5eaf2;border-radius:20px;padding:26px;box-shadow:0 12px 35px rgba(16,24,40,.07);margin-bottom:24px}
+.card h2{font-size:21px;margin-bottom:12px}
+.card h3{font-size:16px;margin:20px 0 8px}
+.lesson{border-top:5px solid #2563eb}
+.lesson ul{padding-left:22px;margin-top:10px}
+.objective{background:#f8fafc;border:1px solid #e5eaf2;border-radius:14px;padding:16px;margin:16px 0}
+.objective strong{display:block;margin-bottom:6px}
+.example{background:#f8fafc;border:1px solid #e5eaf2;border-radius:14px;padding:16px;margin-top:14px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.step{text-align:center;padding:15px 10px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:13px;font-size:13px;font-weight:750;color:#475569}
+.activity{background:#f8faff;border:1px solid #c7d2fe}
+.activity-title{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.activity-number{width:30px;height:30px;border-radius:50%;background:#2563eb;color:white;display:flex;align-items:center;justify-content:center;font-weight:850}
+.note{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;margin:14px 0}
+.btn{width:100%;border:0;border-radius:13px;background:#2563eb;color:#fff;padding:14px 18px;font-size:14px;font-weight:850;cursor:pointer}
+.btn:hover{background:#1d4ed8}
+.btn.secondary{background:#eef2ff;color:#3730a3}
+.btn.danger{background:#fee2e2;color:#b91c1c}
+.status{margin-top:14px;background:#fff;border:1px solid #e5eaf2;border-radius:14px;padding:14px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #eef2f7;font-size:14px}
+.row:last-child{border-bottom:0}
+.val{font-weight:800;text-align:right}
+.good{color:#15803d}
+.concepts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.concept{padding:15px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:13px}
+.concept strong{display:block;margin-bottom:6px}
+.concept span{font-size:13px;line-height:1.55;color:#6f7a90}
+.quiz-option{display:block;width:100%;text-align:left;padding:12px 14px;margin:8px 0;border:1px solid #e5eaf2;border-radius:11px;background:#fff;cursor:pointer}
+.quiz-option:hover{background:#f8fafc}
+.quiz-result{font-size:14px;font-weight:800;margin-top:10px}
+.controller-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}
+.controller{display:grid;grid-template-columns:76px 76px 76px;grid-template-rows:58px 58px 58px;gap:10px;justify-content:center;background:#f8fafc;border:1px solid #e5eaf2;border-radius:16px;padding:20px}
+.cbtn{width:76px;height:58px;border:0;border-radius:12px;background:#2563eb;color:#fff;font-weight:850;font-size:22px;cursor:pointer}
+.up{grid-column:2;grid-row:1}.left{grid-column:1;grid-row:2}.home{grid-column:2;grid-row:2;font-size:12px;background:#eef2ff;color:#3730a3}.right{grid-column:3;grid-row:2}.down{grid-column:2;grid-row:3}
+.actions{display:grid;gap:10px;align-content:center}
+.log{margin-top:14px;min-height:110px;background:#0f172a;color:#dbeafe;border-radius:13px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;max-height:220px;overflow:auto}
+.mini{padding:12px 13px;border:1px solid #e5eaf2;background:#f8fafc;border-radius:11px;margin:9px 0;font-size:14px;color:#475569}
+.progress{height:9px;background:#edf1f7;border-radius:999px;overflow:hidden;margin-top:8px}
+.progress div{height:100%;background:#2563eb}
+.progress-label{display:flex;justify-content:space-between;font-size:13px;color:#6f7a90}
+.reading-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
+.reading{text-align:center;padding:16px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:13px}
+.reading b{display:block;font-size:24px;margin-top:7px}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  aside{display:none}
+  main{padding:20px}
+  .layout,.controller-wrap{grid-template-columns:1fr}
+  .flow,.concepts{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .flow,.concepts,.reading-grid{grid-template-columns:1fr}
+  .top{align-items:flex-start;flex-direction:column}
+  .hero,.card{padding:20px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<aside>
+  <div class="brand">Io<span>Track</span></div>
+  <div class="tag">Learn the concept first, then see it happen through a real robotic activity.</div>
+
+  <div class="navtitle">Lessons</div>
+  <div class="nav active" data-m="1" onclick="showModule(1)">Module 1 · What is IoT?</div>
+  <div class="nav" data-m="2" onclick="showModule(2)">Module 2 · Robot Arm Control</div>
+  <div class="nav" data-m="3" onclick="showModule(3)">Module 3 · Sensors & Data</div>
+  <div class="nav" data-m="4" onclick="showModule(4)">Module 4 · Color Detection</div>
+  <div class="nav" data-m="5" onclick="showModule(5)">Module 5 · Stacking (Optional)</div>
+  <div class="nav" data-m="6" onclick="showModule(6)">Module 6 · Pick Up Blocks</div>
+
+  <div class="navtitle">Assessment</div>
+  <div class="nav">Pre-Test</div>
+  <div class="nav">Post-Test</div>
+  <div class="nav">Learning Progress</div>
+</aside>
+
+<main>
+
+<div class="top">
+  <div class="crumb" id="crumb">Learning Modules / Module 1</div>
+  <div class="badge"><span class="dot"></span> Robot Connected</div>
+</div>
+
+<!-- MODULE 1 -->
+<section class="page active" id="m1">
+  <div class="hero">
+    <span class="pill">MODULE 1 · LESSON</span>
+    <h1>What is the Internet of Things?</h1>
+    <p>Start with the basic idea of IoT before interacting with the robotic arm.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card lesson">
+        <h2>Lesson 1: Understanding IoT</h2>
+        <p>The Internet of Things, or IoT, is a way for physical devices to collect information, process it, communicate, and perform an action. A simple IoT system usually has an input, a controller, a method of communication, and an output.</p>
+
+        <div class="objective">
+          <strong>Learning objective</strong>
+          <p>After this lesson, you should be able to explain how a physical event can become digital data and then cause a physical response.</p>
+        </div>
+
+        <h3>The four basic parts</h3>
+        <div class="concepts">
+          <div class="concept"><strong>1. Input / Sensor</strong><span>Detects something in the real world, such as color.</span></div>
+          <div class="concept"><strong>2. Controller</strong><span>Processes the sensor reading and decides what to do.</span></div>
+          <div class="concept"><strong>3. Communication</strong><span>Allows software and devices to exchange commands or data.</span></div>
+        </div>
+
+        <div class="concepts">
+          <div class="concept"><strong>4. Output</strong><span>Performs an action, such as moving a servo motor.</span></div>
+          <div class="concept"><strong>IoTrack example</strong><span>A website command can request an activity from the robot.</span></div>
+          <div class="concept"><strong>Why it matters</strong><span>IoT connects software with events and actions in the physical world.</span></div>
+        </div>
+
+        <div class="example">
+          <strong>Example:</strong>
+          <p>Imagine a smart light. A sensor notices the room is dark, the controller processes that information, and the light turns on. IoTrack demonstrates the same input → processing → output idea using a robot.</p>
+        </div>
+      </div>
+
+      <div class="card activity">
+        <div class="activity-title"><div class="activity-number">1</div><h2>Lesson Activity: Check the Robot</h2></div>
+        <p>After reading the lesson, send a simple status request to show that software can communicate with a physical device.</p>
+        <div class="note">Prototype behavior is simulated. In the finished system, this button would call the robot communication layer.</div>
+        <button class="btn" onclick="pingRobot()">Check Robot Connection</button>
+
+        <div class="status">
+          <div class="row"><span>Command</span><span class="val" id="pingCmd">None</span></div>
+          <div class="row"><span>Robot response</span><span class="val good" id="pingResult">Ready</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Check</h2>
+        <p>Which part of an IoT system detects information from the environment?</p>
+        <button class="quiz-option" onclick="answer(false,'q1')">A. Servo motor</button>
+        <button class="quiz-option" onclick="answer(true,'q1')">B. Sensor</button>
+        <button class="quiz-option" onclick="answer(false,'q1')">C. Website title</button>
+        <div id="q1" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Lesson Flow</h2>
+        <div class="mini">1. Read the lesson</div>
+        <div class="mini">2. Study the example</div>
+        <div class="mini">3. Run the robot activity</div>
+        <div class="mini">4. Answer the quick check</div>
+      </div>
+
+      <div class="card">
+        <div class="progress-label"><span>Course progress</span><strong>17%</strong></div>
+        <div class="progress"><div style="width:17%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 2 -->
+<section class="page" id="m2">
+  <div class="hero">
+    <span class="pill">MODULE 2 · LESSON</span>
+    <h1>Robotic Arm Movement and Manual Control</h1>
+    <p>Learn how individual commands correspond to physical movements, then control the arm manually.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card lesson">
+        <h2>Lesson 2: Controlling Servo-Based Movement</h2>
+        <p>A robotic arm uses servo motors at its joints. Each servo can move to a programmed position or angle. Instead of running an entire automatic sorting routine, software can also send individual movement commands.</p>
+
+        <div class="objective">
+          <strong>Learning objective</strong>
+          <p>Explain how a software command can be translated into a specific movement of the robotic arm.</p>
+        </div>
+
+        <h3>Example commands</h3>
+        <div class="concepts">
+          <div class="concept"><strong>LEFT / RIGHT</strong><span>Rotates the base to change horizontal direction.</span></div>
+          <div class="concept"><strong>UP / DOWN</strong><span>Changes the arm's vertical position.</span></div>
+          <div class="concept"><strong>GRAB / RELEASE</strong><span>Closes or opens the gripper.</span></div>
+        </div>
+
+        <h3>Automatic vs. manual control</h3>
+        <ul>
+          <li><strong>Automatic:</strong> one command starts a complete programmed sequence.</li>
+          <li><strong>Manual:</strong> the student sends one movement command at a time.</li>
+          <li><strong>Home:</strong> returns the robot to its known starting position.</li>
+          <li><strong>Stop:</strong> immediately stops the activity.</li>
+        </ul>
+
+        <div class="example">
+          <strong>Example:</strong>
+          <p>Pressing RIGHT on the website can send a MOVE_RIGHT command. The microcontroller receives the command and changes the appropriate servo position.</p>
+        </div>
+      </div>
+
+      <div class="card activity">
+        <div class="activity-title"><div class="activity-number">2</div><h2>Lesson Activity: Manual Robot Controller</h2></div>
+        <p>Use the directional controls only after reviewing the movement lesson above.</p>
+
+        <div class="controller-wrap">
+          <div class="controller">
+            <button class="cbtn up" onclick="moveRobot('UP')">↑</button>
+            <button class="cbtn left" onclick="moveRobot('LEFT')">←</button>
+            <button class="cbtn home" onclick="moveRobot('HOME')">HOME</button>
+            <button class="cbtn right" onclick="moveRobot('RIGHT')">→</button>
+            <button class="cbtn down" onclick="moveRobot('DOWN')">↓</button>
+          </div>
+
+          <div class="actions">
+            <button class="btn" onclick="moveRobot('GRAB')">Close Gripper / Grab</button>
+            <button class="btn secondary" onclick="moveRobot('RELEASE')">Open Gripper / Release</button>
+            <button class="btn danger" onclick="moveRobot('STOP')">■ Emergency Stop</button>
+          </div>
+        </div>
+
+        <div class="status">
+          <div class="row"><span>Robot status</span><span id="manualStatus" class="val good">Ready</span></div>
+          <div class="row"><span>Last command</span><span id="manualCmd" class="val">None</span></div>
+          <div class="row"><span>Position</span><span id="manualPos" class="val">Home</span></div>
+        </div>
+
+        <div class="log" id="manualLog">Controller ready.<br>Waiting for a movement command...</div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Check</h2>
+        <p>What is the difference between automatic and manual control?</p>
+        <button class="quiz-option" onclick="answer(true,'q2')">A. Automatic runs a programmed sequence; manual sends individual commands</button>
+        <button class="quiz-option" onclick="answer(false,'q2')">B. They are exactly the same</button>
+        <button class="quiz-option" onclick="answer(false,'q2')">C. Manual control does not use software</button>
+        <div id="q2" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Safety & Use</h2>
+        <div class="mini">Keep the work area clear</div>
+        <div class="mini">Use small movement steps</div>
+        <div class="mini">Return HOME after activity</div>
+        <div class="mini">Use STOP if movement is unsafe</div>
+      </div>
+
+      <div class="card">
+        <div class="progress-label"><span>Course progress</span><strong>33%</strong></div>
+        <div class="progress"><div style="width:33%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 3 -->
+<section class="page" id="m3">
+  <div class="hero">
+    <span class="pill">MODULE 3 · LESSON</span>
+    <h1>Sensors, Data, and Microcontrollers</h1>
+    <p>Learn what a sensor reading means and how the controller uses that information.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card lesson">
+        <h2>Lesson 3: From Physical Event to Data</h2>
+        <p>A sensor does not “think” like a person. It measures physical properties and produces values. The microcontroller reads those values and uses programmed rules to interpret them.</p>
+
+        <div class="objective">
+          <strong>Learning objective</strong>
+          <p>Describe the difference between data collection and data processing.</p>
+        </div>
+
+        <h3>What happens step by step?</h3>
+        <div class="flow">
+          <div class="step">1. Object is placed</div>
+          <div class="step">2. Sensor measures</div>
+          <div class="step">3. Controller reads values</div>
+          <div class="step">4. Program decides</div>
+        </div>
+
+        <h3>Sensor vs. microcontroller</h3>
+        <ul>
+          <li><strong>Sensor:</strong> gathers raw information.</li>
+          <li><strong>Microcontroller:</strong> reads the information and follows programmed logic.</li>
+          <li><strong>Servo motor:</strong> carries out a movement requested by the controller.</li>
+        </ul>
+
+        <div class="example">
+          <strong>Example:</strong>
+          <p>If the color sensor produces values that match the programmed range for red, the controller can label the block as RED and choose a sorting action.</p>
+        </div>
+      </div>
+
+      <div class="card activity">
+        <div class="activity-title"><div class="activity-number">3</div><h2>Lesson Activity: Read Sensor Data</h2></div>
+        <p>Request sample sensor values and observe how raw numbers can be interpreted as a detected color.</p>
+
+        <button class="btn" onclick="readSensors()">Read Sensor Data</button>
+
+        <div class="reading-grid">
+          <div class="reading">Red<b id="rv">—</b></div>
+          <div class="reading">Green<b id="gv">—</b></div>
+          <div class="reading">Blue<b id="bv">—</b></div>
+        </div>
+
+        <div class="status">
+          <div class="row"><span>Interpreted color</span><span id="detected" class="val">Waiting</span></div>
+          <div class="row"><span>Status</span><span id="sensorStatus" class="val good">Ready</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Check</h2>
+        <p>Who decides what the robot should do after receiving sensor data?</p>
+        <button class="quiz-option" onclick="answer(false,'q3')">A. The colored block</button>
+        <button class="quiz-option" onclick="answer(true,'q3')">B. The microcontroller's program</button>
+        <button class="quiz-option" onclick="answer(false,'q3')">C. The servo wire</button>
+        <div id="q3" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Key Terms</h2>
+        <div class="mini">Sensor = collects data</div>
+        <div class="mini">Microcontroller = processes data</div>
+        <div class="mini">Program = rules / instructions</div>
+        <div class="mini">Servo = physical output</div>
+      </div>
+
+      <div class="card">
+        <div class="progress-label"><span>Course progress</span><strong>50%</strong></div>
+        <div class="progress"><div style="width:50%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 4 -->
+<section class="page" id="m4">
+  <div class="hero">
+    <span class="pill">MODULE 4 · LESSON</span>
+    <h1>Color Detection</h1>
+    <p>Learn how the color sensor identifies red, blue, and green blocks, then ask the robotic arm to pick up a specific color.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card lesson">
+        <h2>Lesson 4: Detecting a Block by Color</h2>
+        <p>The color sensor gathers red, green, and blue light values from a block. The microcontroller compares those readings with programmed color ranges so the system can identify the block as RED, BLUE, or GREEN.</p>
+
+        <div class="objective">
+          <strong>Learning objective</strong>
+          <p>Explain how a color sensor and microcontroller work together to identify a target block before the robotic arm picks it up.</p>
+        </div>
+
+        <h3>How the activity works</h3>
+        <div class="flow">
+          <div class="step">1. Student selects a color</div>
+          <div class="step">2. Website sends the command</div>
+          <div class="step">3. Sensor searches for the target</div>
+          <div class="step">4. Robot picks up the block</div>
+        </div>
+
+        <h3>Example</h3>
+        <div class="example">
+          <p>If the student presses <strong>Pick Up Red</strong>, the website sends <strong>PICK_RED</strong>. The robot looks for a red block, confirms the detected color, moves to the block, closes the gripper, and lifts it.</p>
+        </div>
+
+        <h3>Why use separate buttons?</h3>
+        <p>Each button demonstrates that the website can request a specific physical task while the sensor still verifies the color of the block before pickup.</p>
+      </div>
+
+      <div class="card activity">
+        <div class="activity-title">
+          <div class="activity-number">4</div>
+          <h2>Lesson Activity: Pick Up a Color</h2>
+        </div>
+        <p>Select which colored block the robotic arm should detect and pick up.</p>
+
+        <div class="concepts">
+          <button class="btn" onclick="pickColor('RED')">Pick Up Red</button>
+          <button class="btn" onclick="pickColor('BLUE')">Pick Up Blue</button>
+          <button class="btn" onclick="pickColor('GREEN')">Pick Up Green</button>
+        </div>
+
+        <div class="status">
+          <div class="row"><span>Command</span><span id="colorCmd" class="val">None</span></div>
+          <div class="row"><span>Target color</span><span id="targetColor" class="val">—</span></div>
+          <div class="row"><span>Detected color</span><span id="detectedColor4" class="val">—</span></div>
+          <div class="row"><span>Robot status</span><span id="colorStatus" class="val good">Ready</span></div>
+          <div class="row"><span>Result</span><span id="colorResult" class="val">Waiting</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Check</h2>
+        <p>Why should the sensor verify the color before the robot picks up the block?</p>
+        <button class="quiz-option" onclick="answer(true,'q4')">A. To confirm that the robot is picking up the requested color</button>
+        <button class="quiz-option" onclick="answer(false,'q4')">B. To make the website background change</button>
+        <button class="quiz-option" onclick="answer(false,'q4')">C. The color sensor is not needed</button>
+        <div id="q4" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Available Commands</h2>
+        <div class="mini">PICK_RED</div>
+        <div class="mini">PICK_BLUE</div>
+        <div class="mini">PICK_GREEN</div>
+      </div>
+
+      <div class="card">
+        <h2>Concept Connection</h2>
+        <div class="mini">Input: selected color + color sensor</div>
+        <div class="mini">Processing: microcontroller verifies target</div>
+        <div class="mini">Output: gripper picks up block</div>
+      </div>
+
+      <div class="card">
+        <div class="progress-label"><span>Course progress</span><strong>67%</strong></div>
+        <div class="progress"><div style="width:67%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- MODULE 5 -->
+<section class="page" id="m5">
+  <div class="hero">
+    <span class="pill">MODULE 5 · OPTIONAL LESSON</span>
+    <h1>Stacking Blocks</h1>
+    <p>Explore how the robotic arm can place one block on top of another while maintaining a stable stack.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card lesson">
+        <h2>Lesson 5: Stacking and Balance</h2>
+        <p>Stacking requires more precision than simply picking up a block. The robot must place each block close to the center of the block below it so the stack does not fall.</p>
+
+        <div class="objective">
+          <strong>Learning objective</strong>
+          <p>Describe why block size, placement, and balance are important when a robotic arm performs a stacking task.</p>
+        </div>
+
+        <div class="note">
+          <strong>Optional lesson:</strong> If the prototype only uses blocks of the same size and reliable stacking cannot be achieved, this lesson can be removed from the final system rather than demonstrating an activity that frequently fails.
+        </div>
+
+        <h3>Recommended block setup</h3>
+        <ul>
+          <li>Use blocks with <strong>different sizes</strong> when possible.</li>
+          <li>Place the <strong>largest block at the bottom</strong>.</li>
+          <li>Place smaller blocks above the larger base.</li>
+          <li>The robot should release each block near the center of the block below it.</li>
+          <li>If only same-size blocks are available and the stack is unstable, remove or disable this activity.</li>
+        </ul>
+
+        <div class="example">
+          <strong>Example:</strong>
+          <p>Large block → medium block → small block. A wider base gives the upper blocks more support and reduces the chance of the stack falling.</p>
+        </div>
+      </div>
+
+      <div class="card activity">
+        <div class="activity-title">
+          <div class="activity-number">5</div>
+          <h2>Lesson Activity: Stacking Demonstration</h2>
+        </div>
+        <p>This activity is optional and should only be enabled when the physical blocks and robot are stable enough for repeatable stacking.</p>
+
+        <button id="stackBtn" class="btn" onclick="runStacking()">▶ Run Stacking Demonstration</button>
+
+        <div class="status">
+          <div class="row"><span>Command</span><span id="stackCmd" class="val">None</span></div>
+          <div class="row"><span>Robot status</span><span id="stackStatus" class="val good">Ready</span></div>
+          <div class="row"><span>Stacking stage</span><span id="stackStage" class="val">Waiting</span></div>
+          <div class="row"><span>Result</span><span id="stackResult" class="val">Not started</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Check</h2>
+        <p>Which setup is more stable for a stacking demonstration?</p>
+        <button class="quiz-option" onclick="answer(true,'q5')">A. Larger block at the bottom and smaller blocks above it</button>
+        <button class="quiz-option" onclick="answer(false,'q5')">B. Smallest block at the bottom</button>
+        <button class="quiz-option" onclick="answer(false,'q5')">C. The placement of the blocks does not matter</button>
+        <div id="q5" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Recommendation</h2>
+        <div class="mini">Keep only if stacking is reliable</div>
+        <div class="mini">Prefer different block sizes</div>
+        <div class="mini">Largest block = base</div>
+        <div class="mini">Remove lesson if repeated failures occur</div>
+      </div>
+
+      <div class="card">
+        <div class="progress-label"><span>Course progress</span><strong>83%</strong></div>
+        <div class="progress"><div style="width:83%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 6 -->
+<section class="page" id="m6">
+  <div class="hero">
+    <span class="pill">MODULE 6 · LESSON</span>
+    <h1>Pick Up Blocks</h1>
+    <p>Learn how one website command can request a task with a specific number of blocks.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card lesson">
+        <h2>Lesson 6: Repeating a Robotic Task</h2>
+        <p>A robotic routine can be repeated a specific number of times. Instead of manually pressing the pickup control for every block, the student can choose how many blocks should be handled and let the programmed routine complete the requested count.</p>
+
+        <div class="objective">
+          <strong>Learning objective</strong>
+          <p>Explain how a command can include a quantity and cause the robot to repeat a programmed pickup routine.</p>
+        </div>
+
+        <h3>How the commands work</h3>
+        <div class="concepts">
+          <div class="concept"><strong>PICK_1_BLOCK</strong><span>Runs the pickup routine once.</span></div>
+          <div class="concept"><strong>PICK_2_BLOCKS</strong><span>Runs the pickup routine for two blocks.</span></div>
+          <div class="concept"><strong>PICK_3_BLOCKS</strong><span>Runs the pickup routine for three blocks.</span></div>
+        </div>
+
+        <div class="example">
+          <strong>Example:</strong>
+          <p>If the student selects <strong>Pick Up 3 Blocks</strong>, the website sends the requested quantity. The robot then performs the programmed pickup sequence until three blocks have been handled.</p>
+        </div>
+      </div>
+
+      <div class="card activity">
+        <div class="activity-title">
+          <div class="activity-number">6</div>
+          <h2>Lesson Activity: Choose the Number of Blocks</h2>
+        </div>
+        <p>Select how many blocks the robot should pick up.</p>
+
+        <div class="concepts">
+          <button class="btn" onclick="pickBlocks(1)">Pick Up 1 Block</button>
+          <button class="btn" onclick="pickBlocks(2)">Pick Up 2 Blocks</button>
+          <button class="btn" onclick="pickBlocks(3)">Pick Up 3 Blocks</button>
+        </div>
+
+        <div class="status">
+          <div class="row"><span>Command</span><span id="blocksCmd" class="val">None</span></div>
+          <div class="row"><span>Requested blocks</span><span id="blocksRequested" class="val">—</span></div>
+          <div class="row"><span>Blocks completed</span><span id="blocksCompleted" class="val">0</span></div>
+          <div class="row"><span>Robot status</span><span id="blocksStatus" class="val good">Ready</span></div>
+          <div class="row"><span>Result</span><span id="blocksResult" class="val">Waiting</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick Check</h2>
+        <p>What does the number in a pickup command tell the robot?</p>
+        <button class="quiz-option" onclick="answer(true,'q6')">A. How many times the pickup routine should be completed</button>
+        <button class="quiz-option" onclick="answer(false,'q6')">B. What color the website should become</button>
+        <button class="quiz-option" onclick="answer(false,'q6')">C. How many students are using the system</button>
+        <div id="q6" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Available Commands</h2>
+        <div class="mini">PICK_1_BLOCK</div>
+        <div class="mini">PICK_2_BLOCKS</div>
+        <div class="mini">PICK_3_BLOCKS</div>
+      </div>
+
+      <div class="card">
+        <h2>Lesson Flow</h2>
+        <div class="mini">1. Select quantity</div>
+        <div class="mini">2. Website sends command</div>
+        <div class="mini">3. Robot repeats pickup routine</div>
+        <div class="mini">4. Website reports completion</div>
+      </div>
+
+      <div class="card">
+        <div class="progress-label"><span>Course progress</span><strong>100%</strong></div>
+        <div class="progress"><div style="width:100%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function showModule(n) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  document.querySelectorAll('.nav[data-m]').forEach(nav => nav.classList.remove('active'));
+
+  const page = document.getElementById('m' + n);
+  const nav = document.querySelector('.nav[data-m="' + n + '"]');
+
+  if (!page || !nav) return;
+
+  page.classList.add('active');
+  nav.classList.add('active');
+  document.getElementById('crumb').textContent = 'Learning Modules / Module ' + n;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+async function pingRobot() {
+  const command = document.getElementById('pingCmd');
+  const result = document.getElementById('pingResult');
+
+  command.textContent = 'PING_ROBOT';
+  result.textContent = 'Checking...';
+  result.classList.remove('good');
+
+  await wait(700);
+
+  result.textContent = 'Connected ✓';
+  result.classList.add('good');
+}
+
+function readSensors() {
+  const red = Math.floor(Math.random() * 256);
+  const green = Math.floor(Math.random() * 256);
+  const blue = Math.floor(Math.random() * 256);
+
+  document.getElementById('rv').textContent = red;
+  document.getElementById('gv').textContent = green;
+  document.getElementById('bv').textContent = blue;
+
+  let detectedColor = 'RED';
+  if (green >= red && green >= blue) detectedColor = 'GREEN';
+  if (blue >= red && blue >= green) detectedColor = 'BLUE';
+
+  document.getElementById('detected').textContent = detectedColor;
+  document.getElementById('sensorStatus').textContent = 'Reading received ✓';
+}
+
+async function runSort() {
+  const button = document.getElementById('sortBtn');
+  const command = document.getElementById('sortCmd');
+  const color = document.getElementById('sortColor');
+  const status = document.getElementById('sortStatus');
+  const result = document.getElementById('sortResult');
+
+  button.disabled = true;
+  button.textContent = 'Running demonstration...';
+
+  command.textContent = 'START_COLOR_SORT';
+  color.textContent = '—';
+  status.textContent = 'Scanning';
+  status.classList.remove('good');
+  result.textContent = 'Reading sensor...';
+
+  await wait(900);
+
+  const colors = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+  const selectedColor = colors[Math.floor(Math.random() * colors.length)];
+
+  color.textContent = selectedColor;
+  result.textContent = 'Destination selected';
+
+  await wait(900);
+
+  status.textContent = 'Moving arm';
+  result.textContent = 'Sorting ' + selectedColor + ' block...';
+
+  await wait(1100);
+
+  status.textContent = 'Ready';
+  status.classList.add('good');
+  result.textContent = '✓ Task completed';
+
+  button.disabled = false;
+  button.textContent = '↻ Run Demonstration Again';
+}
+
+const robotPosition = {x: 0, y: 0};
+
+function moveRobot(command) {
+  const status = document.getElementById('manualStatus');
+  const commandText = document.getElementById('manualCmd');
+  const positionText = document.getElementById('manualPos');
+  const log = document.getElementById('manualLog');
+
+  commandText.textContent = command;
+
+  if (command === 'STOP') {
+    status.textContent = 'STOPPED';
+    status.classList.remove('good');
+    log.innerHTML += '<br>■ STOP command sent';
+    log.scrollTop = log.scrollHeight;
+    return;
+  }
+
+  status.textContent = 'Moving...';
+  status.classList.remove('good');
+
+  if (command === 'LEFT') robotPosition.x--;
+  if (command === 'RIGHT') robotPosition.x++;
+  if (command === 'UP') robotPosition.y++;
+  if (command === 'DOWN') robotPosition.y--;
+
+  if (command === 'HOME') {
+    robotPosition.x = 0;
+    robotPosition.y = 0;
+  }
+
+  if (['LEFT','RIGHT','UP','DOWN','HOME'].includes(command)) {
+    positionText.textContent =
+      robotPosition.x === 0 && robotPosition.y === 0
+        ? 'Home'
+        : 'X: ' + robotPosition.x + ', Y: ' + robotPosition.y;
+  }
+
+  log.innerHTML += '<br>→ ' + command + ' command sent';
+
+  setTimeout(() => {
+    status.textContent = 'Ready';
+    status.classList.add('good');
+    log.innerHTML += '<br>✓ Robot acknowledged ' + command;
+    log.scrollTop = log.scrollHeight;
+  }, 450);
+}
+
+
+async function pickColor(color) {
+  const command = document.getElementById('colorCmd');
+  const target = document.getElementById('targetColor');
+  const detected = document.getElementById('detectedColor4');
+  const status = document.getElementById('colorStatus');
+  const result = document.getElementById('colorResult');
+
+  command.textContent = 'PICK_' + color;
+  target.textContent = color;
+  detected.textContent = '—';
+  status.textContent = 'Searching';
+  status.classList.remove('good');
+  result.textContent = 'Looking for ' + color.toLowerCase() + ' block...';
+
+  await wait(700);
+  detected.textContent = color;
+  result.textContent = color + ' block detected';
+
+  await wait(700);
+  status.textContent = 'Picking up';
+  result.textContent = 'Closing gripper and lifting block...';
+
+  await wait(900);
+  status.textContent = 'Ready';
+  status.classList.add('good');
+  result.textContent = '✓ ' + color + ' block picked up';
+}
+
+async function runStacking() {
+  const button = document.getElementById('stackBtn');
+  const command = document.getElementById('stackCmd');
+  const status = document.getElementById('stackStatus');
+  const stage = document.getElementById('stackStage');
+  const result = document.getElementById('stackResult');
+
+  button.disabled = true;
+  button.textContent = 'Running stacking demo...';
+  command.textContent = 'START_STACKING';
+  status.textContent = 'Working';
+  status.classList.remove('good');
+  stage.textContent = 'Placing base block';
+  result.textContent = 'Stacking in progress';
+
+  await wait(800);
+  stage.textContent = 'Placing middle block';
+
+  await wait(800);
+  stage.textContent = 'Placing top block';
+
+  await wait(900);
+  status.textContent = 'Ready';
+  status.classList.add('good');
+  stage.textContent = 'Complete';
+  result.textContent = '✓ Stacking demonstration completed';
+  button.disabled = false;
+  button.textContent = '↻ Run Stacking Demonstration Again';
+}
+
+async function pickBlocks(count) {
+  const command = document.getElementById('blocksCmd');
+  const requested = document.getElementById('blocksRequested');
+  const completed = document.getElementById('blocksCompleted');
+  const status = document.getElementById('blocksStatus');
+  const result = document.getElementById('blocksResult');
+
+  command.textContent = count === 1 ? 'PICK_1_BLOCK' : 'PICK_' + count + '_BLOCKS';
+  requested.textContent = count;
+  completed.textContent = '0';
+  status.textContent = 'Working';
+  status.classList.remove('good');
+  result.textContent = 'Starting pickup routine...';
+
+  for (let i = 1; i <= count; i++) {
+    result.textContent = 'Picking up block ' + i + ' of ' + count + '...';
+    await wait(800);
+    completed.textContent = i;
+  }
+
+  status.textContent = 'Ready';
+  status.classList.add('good');
+  result.textContent = '✓ ' + count + (count === 1 ? ' block' : ' blocks') + ' completed';
+}
+
+
+function answer(correct, id) {
+  const result = document.getElementById(id);
+  result.textContent = correct ? '✓ Correct!' : '✗ Try again.';
+  result.style.color = correct ? '#15803d' : '#b91c1c';
+}
+</script>
+
+</body>
+</html>
