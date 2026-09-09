@@ -6,6 +6,46 @@ import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, CheckCircle2, Cir
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+function IntroAnimation({ show }) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background"
+        >
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0, rotate: -20 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-6 relative w-32 h-32"
+          >
+             <img src="/favicon.svg" alt="IoTrack Logo" className="w-full h-full drop-shadow-[0_0_20px_var(--brand)]" />
+          </motion.div>
+          <motion.h1
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-5xl md:text-6xl font-extrabold font-display flex items-center"
+          >
+            Io<span className="text-brand">Track</span>
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="mt-3 text-muted-foreground font-semibold tracking-[0.3em] uppercase text-sm md:text-base text-center"
+          >
+            Learning Kit
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 function Reveal({ children, delay = 0, y = 30, className = "" }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
@@ -1097,6 +1137,18 @@ export default function Home() {
   const [currentStep, setCurrentStep] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [maxUnlockedAbsoluteStep, setMaxUnlockedAbsoluteStep] = useState(1);
+  const [showIntro, setShowIntro] = useState(true);
+
+  React.useEffect(() => {
+    const hasPlayed = sessionStorage.getItem('iotrack-intro-played');
+    if (hasPlayed) {
+      setShowIntro(false);
+    } else {
+      sessionStorage.setItem('iotrack-intro-played', 'true');
+      const timer = setTimeout(() => setShowIntro(false), 3000); // 3 seconds total
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const modIndex = COURSE_MODULES.findIndex(m => m.id === currentModule);
   let nextMod = null;
@@ -1135,7 +1187,10 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-background text-foreground font-sans selection:bg-brand/20">
+    <>
+      <IntroAnimation show={showIntro} />
+      
+      <div className={`h-screen flex flex-col overflow-hidden bg-background text-foreground font-sans selection:bg-brand/20 ${showIntro ? 'opacity-0' : 'opacity-100 transition-opacity duration-700'}`}>
       <BlobsBackground />
       <FloatingParticles />
       
@@ -1170,5 +1225,6 @@ export default function Home() {
         <RightSidebar maxUnlockedAbsoluteStep={maxUnlockedAbsoluteStep} />
       </div>
     </div>
+    </>
   );
 }
