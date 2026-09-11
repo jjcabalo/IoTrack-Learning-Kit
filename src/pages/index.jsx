@@ -46,6 +46,98 @@ function IntroAnimation({ show }) {
   );
 }
 
+function CourseCompletionAnimation({ show, onClose }) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white/95 dark:bg-black/95 backdrop-blur-md overflow-hidden"
+        >
+          {/* Confetti / Particle effect behind */}
+          <div className="absolute inset-0 pointer-events-none">
+             {[...Array(24)].map((_, i) => (
+               <motion.div
+                 key={`particle-${i}`}
+                 initial={{ 
+                   y: '100vh', 
+                   x: `${Math.random() * 100}vw`,
+                   rotate: 0,
+                   opacity: 0
+                 }}
+                 animate={{ 
+                   y: '-10vh',
+                   x: `${Math.random() * 100}vw`,
+                   rotate: 360,
+                   opacity: [0, 1, 1, 0]
+                 }}
+                 transition={{ 
+                   duration: 2 + Math.random() * 4, 
+                   repeat: Infinity, 
+                   delay: Math.random() * 2,
+                   ease: "linear"
+                 }}
+                 className="absolute rounded-full shadow-[0_0_15px_var(--brand)]"
+                 style={{
+                   width: `${Math.random() * 15 + 5}px`,
+                   height: `${Math.random() * 15 + 5}px`,
+                   backgroundColor: i % 2 === 0 ? 'var(--brand)' : 'var(--foreground)',
+                   opacity: 0.7
+                 }}
+               />
+             ))}
+          </div>
+
+          <motion.div 
+            initial={{ scale: 0.5, y: 50, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            transition={{ type: "spring", bounce: 0.4, duration: 1 }}
+            className="text-center relative z-10 p-6 md:p-8 max-w-2xl mx-auto"
+          >
+            <motion.div 
+              initial={{ rotate: -180, scale: 0 }}
+              animate={{ rotate: 0, scale: 1 }}
+              transition={{ type: "spring", bounce: 0.5, delay: 0.2, duration: 1 }}
+              className="w-20 h-20 md:w-32 md:h-32 mx-auto rounded-full bg-gradient-brand flex items-center justify-center shadow-glow mb-6 md:mb-8 text-white border-4 border-background"
+            >
+              <Award className="w-10 h-10 md:w-16 md:h-16" />
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-4xl md:text-7xl font-extrabold font-display mb-4 md:mb-6 text-foreground tracking-tight"
+            >
+              Course <span className="text-brand">Completed!</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="text-base md:text-xl text-muted-foreground mb-8 md:mb-10 leading-relaxed max-w-sm md:max-w-none mx-auto"
+            >
+              Congratulations on finishing the IoTrack Learning Kit! You've successfully learned the fundamentals of IoT, robotics, and sensor integration.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 }}
+            >
+              <MagneticButton onClick={onClose} className="px-8 py-4 md:px-10 md:py-5 text-lg md:text-xl w-full sm:w-auto mx-auto font-extrabold">
+                Return to Dashboard <ArrowRight className="w-5 h-5 md:w-5 md:h-5" />
+              </MagneticButton>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 function Reveal({ children, delay = 0, y = 30, className = "" }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
@@ -124,13 +216,13 @@ function TopNav({ setMobileMenuOpen }) {
 }
 
 export const COURSE_MODULES = [
+  { id: 'overview', num: 'Welcome', title: 'Course Overview', items: [{ title: 'Overview', icon: <Globe className="w-4 h-4"/>, meta: 'Start Here' }] },
   { id: 'pretest', num: 'Assessment', title: 'Course Pre-Test', items: [{ title: 'Pre-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
-  { id: 1, title: 'IoTrack Introduction', items: [{ title: 'What is IoTrack', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'What is IoT', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'The Hardware behind the kit', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
-  { id: 2, title: 'Robot Arm Control', items: [{ title: 'How the robotic arm works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Prerequisite Activity', icon: <Play className="w-4 h-4"/>, meta: 'Activity' }, { title: 'Robotic arm movement', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
+  { id: 1, title: 'IoTrack Introduction', items: [{ title: 'What is IoTrack', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'What is IoT', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'The Hardware behind the kit', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }, { title: 'Prerequisite Activity', icon: <Play className="w-4 h-4"/>, meta: 'Activity' }] },
+  { id: 2, title: 'Robot Arm Control', items: [{ title: 'How the robotic arm works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Robotic arm movement', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 3, title: 'Sensors & Data', items: [{ title: 'How the sensors works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Read Sensor Data', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 4, title: 'Color Detection', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 5, title: 'Stacking', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
-  { id: 6, title: 'Pick Up Blocks', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 'posttest', num: 'Assessment', title: 'Course Post-Test', items: [{ title: 'Post-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
 ];
 
@@ -383,7 +475,7 @@ function ContentActions({ nextTitle, onNext, isLast }) {
     return (
       <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
         <div className="flex w-full sm:w-auto">
-          <button onClick={() => alert("Course completed! Thank you for participating.")} className="px-6 py-3 rounded-2xl border border-border w-full sm:w-auto bg-brand text-brand-foreground transition-colors flex items-center justify-center gap-2 font-bold hover:bg-brand/90 hover:shadow-glow">
+          <button onClick={() => { window.dispatchEvent(new Event('course-completed')); onNext(); }} className="px-6 py-3 rounded-2xl border border-border w-full sm:w-auto bg-brand text-brand-foreground transition-colors flex items-center justify-center gap-2 font-bold hover:bg-brand/90 hover:shadow-glow">
             I'm Done <CheckCircle2 className="w-4 h-4" />
           </button>
         </div>
@@ -428,7 +520,8 @@ function QuickCheck({ questions }) {
 
   return (
     <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
-      <h2 className="text-2xl font-bold mb-3 flex items-center gap-2"><ClipboardList className="w-6 h-6 text-brand" /> Quick Check</h2>
+      <ClipboardList className="w-8 h-8 text-brand mb-3" />
+      <h2 className="text-2xl font-bold mb-3">Quick Check</h2>
       <p className="text-muted-foreground mb-6 text-lg">Test your knowledge.</p>
       <div className="space-y-6">
         {questions.map((q, qIndex) => (
@@ -472,6 +565,16 @@ function QuickCheck({ questions }) {
 // === MODULE COMPONENTS ===
 
 function Module1({ currentStep, onNext, nextTitle }) {
+  const [pingStatus, setPingStatus] = useState('None');
+  const [pingResult, setPingResult] = useState('Ready');
+
+  const pingRobot = async () => {
+    setPingStatus('PING_ROBOT');
+    setPingResult('Checking...');
+    await wait(700);
+    setPingResult('Connected \u2705');
+  };
+
   const q1 = [
     { question: "What is the primary 'brain' of the IoTrack kit?", options: [{text: "Servo Motors", isCorrect: false}, {text: "Color Sensor", isCorrect: false}, {text: "ESP32 Microcontroller", isCorrect: true}] },
     { question: "What type of action does the robotic arm perform?", options: [{text: "Physical Actuation", isCorrect: true}, {text: "Data Sensing", isCorrect: false}, {text: "Wireless Routing", isCorrect: false}] },
@@ -485,8 +588,8 @@ function Module1({ currentStep, onNext, nextTitle }) {
       
       <Reveal delay={0.1}>
         <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-glow relative overflow-hidden">
-          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 1</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">IoTrack Introduction</h1>
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 1 • {COURSE_MODULES.find(m => m.id === 1).items[currentStep]?.meta?.toUpperCase()}</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">{COURSE_MODULES.find(m => m.id === 1).items[currentStep]?.title}</h1>
           <p className="text-lg text-muted-foreground max-w-2xl relative z-10">Get to know the IoTrack robotic arm and the core ideas of IoT.</p>
         </div>
       </Reveal>
@@ -494,7 +597,8 @@ function Module1({ currentStep, onNext, nextTitle }) {
       {currentStep === 0 && (
         <Reveal delay={0.2}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand" /> What is IoTrack?</h2>
+            <BookOpen className="w-8 h-8 text-brand mb-3" />
+            <h2 className="text-2xl font-bold mb-4">What is IoTrack?</h2>
             <p className="text-base md:text-lg text-muted-foreground mb-6">IoTrack is a smart robotic arm designed to help you learn about the Internet of Things (IoT). It brings ideas to life by connecting web interfaces with real-world physical movements.</p>
             
             <div className="grid sm:grid-cols-2 gap-4">
@@ -514,7 +618,8 @@ function Module1({ currentStep, onNext, nextTitle }) {
       {currentStep === 1 && (
         <Reveal delay={0.1}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand" /> What is IoT?</h2>
+            <BookOpen className="w-8 h-8 text-brand mb-3" />
+            <h2 className="text-2xl font-bold mb-4">What is IoT?</h2>
             <p className="text-muted-foreground mb-6 text-base md:text-lg">The Internet of Things (IoT) connects devices to the internet so they can share data and perform tasks automatically.</p>
             
             <div className="grid md:grid-cols-2 gap-4">
@@ -542,7 +647,8 @@ function Module1({ currentStep, onNext, nextTitle }) {
       {currentStep === 2 && (
         <Reveal delay={0.1}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand" /> The Hardware</h2>
+            <BookOpen className="w-8 h-8 text-brand mb-3" />
+            <h2 className="text-2xl font-bold mb-4">The Hardware</h2>
             <p className="text-muted-foreground mb-6 text-base md:text-lg">Here are the main components that make up the IoTrack kit.</p>
             
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -563,6 +669,28 @@ function Module1({ currentStep, onNext, nextTitle }) {
         </Reveal>
       )}
 
+      {currentStep === 4 && (
+        <Reveal delay={0.1}>
+          <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-glow relative overflow-hidden">
+            <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft mb-4 relative z-10"><Play className="w-5 h-5" fill="currentColor"/></div>
+            <h2 className="text-2xl font-bold mb-4 relative z-10">Activity: Check the Robot</h2>
+            <p className="text-muted-foreground text-base md:text-lg mb-6 relative z-10">Before sending movement commands, we must ping the robot to verify it's connected and ready.</p>
+            
+            <MagneticButton onClick={pingRobot} className="w-full sm:w-auto px-8 mb-6 text-lg relative z-10 py-4 bg-brand text-brand-foreground hover:bg-brand/90 hover:shadow-glow">Check Robot Connection</MagneticButton>
+            
+            <div className="bg-background/80 backdrop-blur border border-border rounded-xl p-5 text-sm relative z-10">
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted-foreground text-base">Command</span><span className="font-bold font-mono text-brand bg-brand/10 px-2 rounded">{pingStatus}</span>
+              </div>
+              <div className="flex justify-between py-2 pt-4">
+                <span className="text-muted-foreground text-base">Robot response</span>
+                <span className={`font-bold flex items-center gap-1 ${pingResult.includes('\u2705') ? 'text-green-500 text-base' : 'text-base'}`}>{pingResult}</span>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      )}
+
       <ContentActions nextTitle={nextTitle} onNext={onNext} />
     </motion.div>
   );
@@ -573,9 +701,6 @@ function Module2({ currentStep, onNext, nextTitle }) {
   const [status, setStatus] = useState('Ready');
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [log, setLog] = useState(['Controller ready.', 'Waiting for a movement command...']);
-  
-  const [pingStatus, setPingStatus] = useState('None');
-  const [pingResult, setPingResult] = useState('Ready');
 
   const q2 = [
     { question: "How is a servo motor different from a standard DC motor?", options: [{text: "It spins much faster", isCorrect: false}, {text: "It moves to precise angles rather than spinning endlessly", isCorrect: true}, {text: "It cannot be controlled by a microcontroller", isCorrect: false}] },
@@ -584,13 +709,6 @@ function Module2({ currentStep, onNext, nextTitle }) {
     { question: "Which joint is responsible for grabbing objects?", options: [{text: "The Base", isCorrect: false}, {text: "The Elbow", isCorrect: false}, {text: "The Gripper", isCorrect: true}] },
     { question: "If you tell the servo to move to 90°, what happens?", options: [{text: "It spins 90 times per second", isCorrect: false}, {text: "It moves to the 90° position and holds it", isCorrect: true}, {text: "It powers off for 90 seconds", isCorrect: false}] }
   ];
-
-  const pingRobot = async () => {
-    setPingStatus('PING_ROBOT');
-    setPingResult('Checking...');
-    await wait(700);
-    setPingResult('Connected ✓');
-  };
 
   const moveRobot = (c) => {
     setCmd(c);
@@ -622,8 +740,8 @@ function Module2({ currentStep, onNext, nextTitle }) {
       
       <Reveal delay={0.1}>
         <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-glow relative overflow-hidden">
-          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 2</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">Robot Arm Control</h1>
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 2 • {COURSE_MODULES.find(m => m.id === 2).items[currentStep]?.meta?.toUpperCase()}</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">{COURSE_MODULES.find(m => m.id === 2).items[currentStep]?.title}</h1>
           <p className="text-lg text-muted-foreground max-w-2xl relative z-10">Learn how the robot's joints move and test its controls.</p>
         </div>
       </Reveal>
@@ -631,7 +749,8 @@ function Module2({ currentStep, onNext, nextTitle }) {
       {currentStep === 0 && (
         <Reveal delay={0.2}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand" /> How the robotic arm works</h2>
+            <BookOpen className="w-8 h-8 text-brand mb-3" />
+            <h2 className="text-2xl font-bold mb-4">How the robotic arm works</h2>
             <p className="text-muted-foreground mb-6 text-base md:text-lg">The robotic arm uses Servo Motors for its joints. Unlike standard motors that spin constantly, servo motors move to a specific angle and hold that exact position.</p>
             
             <div className="bg-brand/5 rounded-xl p-5 mb-6 border border-brand/10">
@@ -655,54 +774,38 @@ function Module2({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 1 && (
         <Reveal delay={0.1}>
-          <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-glow relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-4 relative z-10">
-              <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft"><Play className="w-5 h-5" fill="currentColor"/></div>
-              <h2 className="text-2xl font-bold">Activity: Check the Robot</h2>
-            </div>
-            <p className="text-muted-foreground text-base md:text-lg mb-6 relative z-10">Before sending movement commands, we must ping the robot to verify it's connected and ready.</p>
-            
-            <MagneticButton onClick={pingRobot} className="w-full sm:w-auto px-8 mb-6 text-lg relative z-10 py-4 bg-brand text-brand-foreground hover:bg-brand/90 hover:shadow-glow">Check Robot Connection</MagneticButton>
-            
-            <div className="bg-background/80 backdrop-blur border border-border rounded-xl p-5 text-sm relative z-10">
-              <div className="flex justify-between py-2 border-b border-border">
-                <span className="text-muted-foreground text-base">Command</span><span className="font-bold font-mono text-brand bg-brand/10 px-2 rounded">{pingStatus}</span>
-              </div>
-              <div className="flex justify-between py-2 pt-4">
-                <span className="text-muted-foreground text-base">Robot response</span>
-                <span className={`font-bold flex items-center gap-1 ${pingResult.includes('✓') ? 'text-green-500 text-base' : 'text-base'}`}>{pingResult}</span>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      )}
-
-      {currentStep === 2 && (
-        <Reveal delay={0.1}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-8 shadow-glow relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-6 relative z-10">
-              <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft"><Play className="w-5 h-5" fill="currentColor"/></div>
-              <h2 className="text-2xl font-bold">Activity: Manual Controller</h2>
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft mb-4 relative z-10"><Play className="w-5 h-5" fill="currentColor"/></div>
+            <h2 className="text-2xl font-bold mb-4 relative z-10">Activity: Manual Controller</h2>
             
             <div className="grid md:grid-cols-2 gap-10 mt-6 relative z-10">
               <div className="bg-background rounded-3xl p-6 border border-border shadow-inner">
                 <div className="grid grid-cols-3 grid-rows-3 gap-3 place-items-center max-w-[250px] mx-auto">
                   <div />
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all" onClick={() => moveRobot('UP')}>↑</button>
+                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('UP')}>
+                    <ChevronUp className="w-8 h-8" />
+                  </button>
                   <div />
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all" onClick={() => moveRobot('LEFT')}>←</button>
-                  <button className="bg-secondary text-secondary-foreground w-16 h-16 rounded-2xl text-xs font-bold hover:bg-secondary/80 shadow-soft hover:scale-105 transition-all" onClick={() => moveRobot('HOME')}>HOME</button>
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all" onClick={() => moveRobot('RIGHT')}>→</button>
+                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('LEFT')}>
+                    <ChevronLeft className="w-8 h-8" />
+                  </button>
+                  <button className="bg-secondary text-secondary-foreground w-16 h-16 rounded-2xl text-xs font-bold hover:bg-secondary/80 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('HOME')}>HOME</button>
+                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('RIGHT')}>
+                    <ChevronRight className="w-8 h-8" />
+                  </button>
                   <div />
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all" onClick={() => moveRobot('DOWN')}>↓</button>
+                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('DOWN')}>
+                    <ChevronDown className="w-8 h-8" />
+                  </button>
                   <div />
                 </div>
                 <div className="flex gap-3 justify-center mt-6">
                   <MagneticButton onClick={() => moveRobot('GRAB')} className="flex-1 py-4">Grab</MagneticButton>
                   <MagneticButton onClick={() => moveRobot('RELEASE')} variant="ghost" className="flex-1 py-4 bg-muted border border-border text-foreground">Release</MagneticButton>
                 </div>
-                <button className="w-full bg-destructive/10 text-destructive font-bold py-4 rounded-xl mt-3 hover:bg-destructive/20 border border-destructive/20 transition-colors" onClick={() => moveRobot('STOP')}>■ Emergency Stop</button>
+                <button className="w-full bg-destructive/10 text-destructive font-bold py-4 rounded-xl mt-3 hover:bg-destructive/20 border border-destructive/20 transition-colors flex items-center justify-center gap-2" onClick={() => moveRobot('STOP')}>
+                  <div className="w-4 h-4 bg-destructive rounded-sm"></div> Emergency Stop
+                </button>
               </div>
 
               <div className="flex flex-col gap-4">
@@ -722,7 +825,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
         </Reveal>
       )}
 
-      {currentStep === 3 && (
+      {currentStep === 2 && (
         <Reveal delay={0.1}>
           <QuickCheck questions={q2} />
         </Reveal>
@@ -763,8 +866,8 @@ function Module3({ currentStep, onNext, nextTitle }) {
       
       <Reveal delay={0.1}>
         <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-soft relative overflow-hidden">
-          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 3</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">Sensors & Data</h1>
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 3 • {COURSE_MODULES.find(m => m.id === 3).items[currentStep]?.meta?.toUpperCase()}</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">{COURSE_MODULES.find(m => m.id === 3).items[currentStep]?.title}</h1>
           <p className="text-lg text-muted-foreground relative z-10">Learn how sensors collect data and how the controller interprets it.</p>
         </div>
       </Reveal>
@@ -772,7 +875,8 @@ function Module3({ currentStep, onNext, nextTitle }) {
       {currentStep === 0 && (
         <Reveal delay={0.2}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand" /> How the sensors work</h2>
+            <BookOpen className="w-8 h-8 text-brand mb-3" />
+            <h2 className="text-2xl font-bold mb-4">How the sensors work</h2>
             <p className="text-muted-foreground mb-6 text-base md:text-lg">Sensors turn physical properties into digital numbers. Our kit uses a Color Sensor that bounces light off an object to measure how much Red, Green, and Blue light reflects back.</p>
             
             <div className="bg-brand/5 rounded-xl p-5 mb-6 border border-brand/10">
@@ -797,10 +901,8 @@ function Module3({ currentStep, onNext, nextTitle }) {
       {currentStep === 1 && (
         <Reveal delay={0.1}>
           <div className="glass border-t-4 border-t-brand border border-brand/30 rounded-2xl p-8 shadow-glow relative">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft"><Play className="w-5 h-5" fill="currentColor"/></div>
-              <h2 className="text-2xl font-bold">Activity: Read Sensor Data</h2>
-            </div>
+            <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft mb-4 relative z-10"><Play className="w-5 h-5" fill="currentColor"/></div>
+            <h2 className="text-2xl font-bold mb-4 relative z-10">Activity: Read Sensor Data</h2>
             
             <p className="text-muted-foreground mb-6 text-base md:text-lg">Click the button below to simulate reading data from the color sensor.</p>
             
@@ -877,8 +979,8 @@ function Module4({ currentStep, onNext, nextTitle }) {
       
       <Reveal delay={0.1}>
         <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-soft">
-          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 4</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">Color Detection</h1>
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 4 • {COURSE_MODULES.find(m => m.id === 4).items[currentStep]?.meta?.toUpperCase()}</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">{COURSE_MODULES.find(m => m.id === 4).items[currentStep]?.title}</h1>
           <p className="text-lg text-muted-foreground">See how the robot uses sensor data to make decisions automatically.</p>
         </div>
       </Reveal>
@@ -953,8 +1055,8 @@ function Module5({ currentStep, onNext, nextTitle }) {
       
       <Reveal delay={0.1}>
         <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-soft">
-          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 5</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">Stacking</h1>
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 5 • {COURSE_MODULES.find(m => m.id === 5).items[currentStep]?.meta?.toUpperCase()}</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">{COURSE_MODULES.find(m => m.id === 5).items[currentStep]?.title}</h1>
           <p className="text-lg text-muted-foreground">Learn how to program a multi-step movement sequence.</p>
         </div>
       </Reveal>
@@ -997,73 +1099,68 @@ function Module5({ currentStep, onNext, nextTitle }) {
   );
 }
 
-function Module6({ currentStep, onNext, nextTitle }) {
-  const [running, setRunning] = useState(false);
-  const [activeCount, setActiveCount] = useState(0);
 
-  const q6 = [
-    { question: "How does the web interface tell the robot how many blocks to pick up?", options: [{text: "By passing a parameterized command payload", isCorrect: true}, {text: "By talking to it", isCorrect: false}, {text: "The robot guesses", isCorrect: false}] },
-    { question: "What is a parameter in this context?", options: [{text: "A variable that changes the outcome of a command", isCorrect: true}, {text: "A fixed rule", isCorrect: false}, {text: "A type of sensor", isCorrect: false}] },
-    { question: "Why is parameterizing commands useful?", options: [{text: "It makes the code longer", isCorrect: false}, {text: "It allows a single function to handle multiple variations of a task", isCorrect: true}, {text: "It limits what the robot can do", isCorrect: false}] },
-    { question: "If you send a request for 2 blocks, what happens on the ESP32?", options: [{text: "It repeats the pick up sequence twice", isCorrect: true}, {text: "It ignores it", isCorrect: false}, {text: "It picks up all blocks", isCorrect: false}] },
-    { question: "Can parameters be used for other actions?", options: [{text: "No, only for picking up blocks", isCorrect: false}, {text: "Yes, for example specifying target angles or speeds", isCorrect: true}, {text: "Only on the website", isCorrect: false}] }
-  ];
-
-  const runPickup = async (count) => {
-    setRunning(true);
-    setActiveCount(count);
-    await wait(2000);
-    setRunning(false);
-    setActiveCount(0);
-  };
-
+function CourseOverview({ onNext, nextTitle }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
-      
       <Reveal delay={0.1}>
-        <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-soft">
-          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">MODULE 6</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">Pick Up Blocks</h1>
-          <p className="text-lg text-muted-foreground">Learn how we can give the robot parameters to change what it does.</p>
+        <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 md:p-12 shadow-glow relative overflow-hidden">
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">WELCOME</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-4 font-display tracking-tight">IoTrack Learning Kit</h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl relative z-10 leading-relaxed">
+            Embark on an interactive journey to master the fundamentals of the Internet of Things (IoT), robotics, and sensor integration. 
+          </p>
+
         </div>
       </Reveal>
 
-      {currentStep === 0 && (
-        <Reveal delay={0.2}>
-          <div className="glass border-t-4 border-t-brand rounded-2xl p-10 shadow-soft text-center">
-            <h2 className="text-2xl font-bold mb-4">Activity: Pick Up Request</h2>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Send a command specifying exactly how many blocks the robot should pick up. This is called a parameter.</p>
-            
-            <div className="bg-background border border-border p-8 rounded-3xl max-w-md mx-auto shadow-inner">
-              <div className="flex justify-center gap-4 mb-8">
-                <MagneticButton onClick={() => runPickup(1)} className={`py-4 px-6 text-lg font-bold ${running && activeCount !== 1 ? 'opacity-50' : ''}`}>1 Block</MagneticButton>
-                <MagneticButton onClick={() => runPickup(2)} className={`py-4 px-6 text-lg font-bold ${running && activeCount !== 2 ? 'opacity-50' : ''}`}>2 Blocks</MagneticButton>
-                <MagneticButton onClick={() => runPickup(3)} className={`py-4 px-6 text-lg font-bold ${running && activeCount !== 3 ? 'opacity-50' : ''}`}>3 Blocks</MagneticButton>
-              </div>
-              
-              {running ? (
-                <div className="bg-brand/10 text-brand font-bold p-4 rounded-xl border border-brand/20 animate-pulse text-base">
-                  Robot is currently fetching {activeCount} block(s)...
-                </div>
-              ) : (
-                <div className="text-muted-foreground text-base">Select a quantity to initiate pickup.</div>
-              )}
-            </div>
+      <Reveal delay={0.2}>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="glass rounded-2xl p-6 border-t-4 border-t-brand shadow-soft">
+            <div className="w-12 h-12 rounded-xl bg-gradient-brand text-white flex items-center justify-center mb-4 shadow-soft"><CircuitBoard className="w-6 h-6" /></div>
+            <h3 className="text-xl font-bold mb-2">Robotics</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">Understand how servos work and how to control a robotic arm in 3D space.</p>
           </div>
-        </Reveal>
-      )}
+          <div className="glass rounded-2xl p-6 border-t-4 border-t-brand shadow-soft">
+            <div className="w-12 h-12 rounded-xl bg-gradient-brand text-white flex items-center justify-center mb-4 shadow-soft"><ScanLine className="w-6 h-6" /></div>
+            <h3 className="text-xl font-bold mb-2">Sensors</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">Learn to read and interpret data from color sensors to make physical decisions.</p>
+          </div>
+          <div className="glass rounded-2xl p-6 border-t-4 border-t-brand shadow-soft">
+            <div className="w-12 h-12 rounded-xl bg-gradient-brand text-white flex items-center justify-center mb-4 shadow-soft"><Zap className="w-6 h-6" /></div>
+            <h3 className="text-xl font-bold mb-2">Automation</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">Combine hardware and software to create autonomous sorting and stacking routines.</p>
+          </div>
+        </div>
+      </Reveal>
 
-      {currentStep === 1 && (
-        <Reveal delay={0.1}>
-          <QuickCheck questions={q6} />
-        </Reveal>
-      )}
+      <Reveal delay={0.3}>
+        <div className="glass rounded-3xl p-8 border border-border shadow-soft">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand" /> Course Syllabus</h2>
+          <div className="space-y-4">
+            {[
+              { num: 1, title: 'IoTrack Introduction', desc: 'The basics of IoT and the hardware components.' },
+              { num: 2, title: 'Robot Arm Control', desc: 'Interactive manual controller and servo mechanics.' },
+              { num: 3, title: 'Sensors & Data', desc: 'Polling and interpreting real-time color sensor values.' },
+              { num: 4, title: 'Color Detection', desc: 'Automated sorting algorithms based on sensor input.' },
+              { num: 5, title: 'Stacking', desc: 'Complex, multi-step programmed movement sequences.' }
+            ].map((mod) => (
+              <div key={mod.num} className="flex gap-4 p-4 rounded-2xl bg-background/50 border border-border/50 hover:border-brand/30 transition-colors">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-lg border border-brand/20">{mod.num}</div>
+                <div>
+                  <h4 className="font-bold text-foreground text-lg">{mod.title}</h4>
+                  <p className="text-sm text-muted-foreground mt-1">{mod.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Reveal>
 
       <ContentActions nextTitle={nextTitle} onNext={onNext} />
     </motion.div>
   );
 }
-
 function PreTest({ onNext, nextTitle }) {
   const [loading, setLoading] = useState(true);
   return (
@@ -1133,21 +1230,30 @@ function PostTest({ onNext, nextTitle }) {
 }
 
 export default function Home() {
-  const [currentModule, setCurrentModule] = useState('pretest');
+  const [currentModule, setCurrentModule] = useState('overview');
   const [currentStep, setCurrentStep] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [maxUnlockedAbsoluteStep, setMaxUnlockedAbsoluteStep] = useState(1);
   const [showIntro, setShowIntro] = useState(true);
+  const [showCompletion, setShowCompletion] = useState(false);
 
   React.useEffect(() => {
+    const handleCompletion = () => setShowCompletion(true);
+    window.addEventListener('course-completed', handleCompletion);
+    
+    let timer;
     const hasPlayed = sessionStorage.getItem('iotrack-intro-played');
     if (hasPlayed) {
       setShowIntro(false);
     } else {
       sessionStorage.setItem('iotrack-intro-played', 'true');
-      const timer = setTimeout(() => setShowIntro(false), 3000); // 3 seconds total
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setShowIntro(false), 3000);
     }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener('course-completed', handleCompletion);
+    };
   }, []);
 
   const modIndex = COURSE_MODULES.findIndex(m => m.id === currentModule);
@@ -1189,6 +1295,7 @@ export default function Home() {
   return (
     <>
       <IntroAnimation show={showIntro} />
+      <CourseCompletionAnimation show={showCompletion} onClose={() => setShowCompletion(false)} />
       
       <div className={`h-screen flex flex-col overflow-hidden bg-background text-foreground font-sans selection:bg-brand/20 ${showIntro ? 'opacity-0' : 'opacity-100 transition-opacity duration-700'}`}>
       <BlobsBackground />
@@ -1215,7 +1322,7 @@ export default function Home() {
               {currentModule === 3 && <Module3 key={`m3-${currentStep}`} currentStep={currentStep} onNext={handleNext} nextTitle={nextTitle} />}
               {currentModule === 4 && <Module4 key={`m4-${currentStep}`} currentStep={currentStep} onNext={handleNext} nextTitle={nextTitle} />}
               {currentModule === 5 && <Module5 key={`m5-${currentStep}`} currentStep={currentStep} onNext={handleNext} nextTitle={nextTitle} />}
-              {currentModule === 6 && <Module6 key={`m6-${currentStep}`} currentStep={currentStep} onNext={handleNext} nextTitle={nextTitle} />}
+              {currentModule === 'overview' && <CourseOverview key="overview" onNext={handleNext} nextTitle={nextTitle} />}
               {currentModule === 'pretest' && <PreTest key="pre" onNext={handleNext} nextTitle={nextTitle} />}
               {currentModule === 'posttest' && <PostTest key="post" onNext={handleNext} nextTitle={nextTitle} />}
             </AnimatePresence>
