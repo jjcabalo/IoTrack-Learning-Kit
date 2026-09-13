@@ -1084,7 +1084,6 @@ function Module5({ currentStep, onNext, nextTitle }) {
   const [location, setLocation] = useState('number1');
   const [count, setCount] = useState('3');
   const [robotIp, setRobotIp] = useState('192.168.x.x');
-  const [status, setStatus] = useState('Ready');
 
   const q5 = [
     { question: "What kind of sequence is stacking if it doesn't use the color sensor?", options: [{text: "Open-loop", isCorrect: true}, {text: "Closed-loop", isCorrect: false}, {text: "Random", isCorrect: false}] },
@@ -1099,20 +1098,17 @@ function Module5({ currentStep, onNext, nextTitle }) {
     setBlocks(0);
     
     const cmd = `stack ${location} ${count}`;
-    setStatus(`Sending: ${cmd}...`);
     try {
       const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(cmd));
       if (!response.ok) throw new Error("Failed");
-      const data = await response.text();
-      setStatus(data);
-
+      
       const countNum = parseInt(count);
       for(let i=1; i<=countNum; i++) {
         await wait(800);
         setBlocks(i);
       }
     } catch (error) {
-      setStatus('Error sending command');
+      // Ignore errors silently as requested
     }
     setRunning(false);
   };
@@ -1186,7 +1182,6 @@ function Module5({ currentStep, onNext, nextTitle }) {
                 >
                   {running ? 'Stacking...' : 'Stack'}
                 </button>
-                <div className="text-xs font-medium text-center text-muted-foreground/80 font-mono mt-1 h-4">{status === 'Ready' ? '' : status}</div>
               </div>
             </div>
           </div>
