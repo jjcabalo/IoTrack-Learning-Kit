@@ -1044,7 +1044,7 @@ const CustomSelect = ({ value, onChange, options }) => {
     <div className="relative" ref={dropdownRef}>
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-3 rounded-xl border border-border bg-background/50 text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none cursor-pointer flex justify-between items-center select-none"
+        className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none cursor-pointer flex justify-between items-center select-none"
       >
         <span>{options.find(o => o.value === value)?.label}</span>
         <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
@@ -1167,7 +1167,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
                     value={robotIp} 
                     onChange={(e) => setRobotIp(e.target.value)} 
                     placeholder="e.g. 192.168.1.10"
-                    className="w-full p-3 rounded-xl border border-border bg-background/50 text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
+                    className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
                   />
                 </div>
                 <div>
