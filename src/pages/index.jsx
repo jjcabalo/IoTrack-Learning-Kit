@@ -1236,6 +1236,29 @@ export default function Home() {
   const [maxUnlockedAbsoluteStep, setMaxUnlockedAbsoluteStep] = useState(1);
   const [showIntro, setShowIntro] = useState(true);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  React.useEffect(() => {
+    const savedModule = localStorage.getItem('iotrack_currentModule');
+    const savedStep = localStorage.getItem('iotrack_currentStep');
+    const savedUnlocked = localStorage.getItem('iotrack_maxUnlockedAbsoluteStep');
+    
+    if (savedModule) {
+      setCurrentModule(isNaN(Number(savedModule)) ? savedModule : Number(savedModule));
+    }
+    if (savedStep) setCurrentStep(parseInt(savedStep, 10));
+    if (savedUnlocked) setMaxUnlockedAbsoluteStep(parseInt(savedUnlocked, 10));
+    
+    setIsLoaded(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('iotrack_currentModule', currentModule);
+      localStorage.setItem('iotrack_currentStep', currentStep.toString());
+      localStorage.setItem('iotrack_maxUnlockedAbsoluteStep', maxUnlockedAbsoluteStep.toString());
+    }
+  }, [currentModule, currentStep, maxUnlockedAbsoluteStep, isLoaded]);
 
   React.useEffect(() => {
     const handleCompletion = () => setShowCompletion(true);
