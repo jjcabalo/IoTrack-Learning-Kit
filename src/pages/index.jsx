@@ -1029,6 +1029,10 @@ function Module4({ currentStep, onNext, nextTitle }) {
 function Module5({ currentStep, onNext, nextTitle }) {
   const [running, setRunning] = useState(false);
   const [blocks, setBlocks] = useState(0);
+  const [location, setLocation] = useState('number1');
+  const [count, setCount] = useState('3');
+  const [robotIp, setRobotIp] = useState('192.168.x.x');
+  const [status, setStatus] = useState('Ready');
 
   const q5 = [
     { question: "What kind of sequence is stacking if it doesn't use the color sensor?", options: [{text: "Open-loop", isCorrect: true}, {text: "Closed-loop", isCorrect: false}, {text: "Random", isCorrect: false}] },
@@ -1041,12 +1045,22 @@ function Module5({ currentStep, onNext, nextTitle }) {
   const runStacking = async () => {
     setRunning(true);
     setBlocks(0);
-    await wait(800);
-    setBlocks(1);
-    await wait(800);
-    setBlocks(2);
-    await wait(800);
-    setBlocks(3);
+    
+    const cmd = `stack ${location} ${count}`;
+    setStatus(`Sending: ${cmd}...`);
+    try {
+      const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(cmd));
+      const data = await response.text();
+      setStatus(data);
+    } catch (error) {
+      setStatus('Error sending command');
+    }
+
+    const countNum = parseInt(count);
+    for(let i=1; i<=countNum; i++) {
+      await wait(800);
+      setBlocks(i);
+    }
     setRunning(false);
   };
 
@@ -1067,22 +1081,48 @@ function Module5({ currentStep, onNext, nextTitle }) {
             <h2 className="text-2xl font-bold mb-4">Activity: Run Stacking</h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">This triggers a pre-programmed sequence. The robot moves exactly where it's told, stacking blocks one by one.</p>
             
-            <div className="bg-background border border-border p-8 rounded-3xl max-w-sm mx-auto shadow-inner relative flex flex-col items-center justify-end h-64">
-              <div className="w-full border-b-4 border-border absolute bottom-8"></div>
+            <div className="bg-background border border-border p-8 rounded-3xl max-w-sm mx-auto shadow-inner relative flex flex-col items-center justify-end h-auto min-h-[22rem]">
+              <div className="w-full border-b-4 border-border absolute bottom-[18rem]"></div>
               
-              <AnimatePresence>
-                {blocks >= 1 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-blue-500 rounded border-2 border-blue-600 shadow-sm relative z-10 -mb-1"></motion.div>}
-                {blocks >= 2 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-green-500 rounded border-2 border-green-600 shadow-sm relative z-10 -mb-1"></motion.div>}
-                {blocks >= 3 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-red-500 rounded border-2 border-red-600 shadow-sm relative z-10"></motion.div>}
-              </AnimatePresence>
+              <div className="mb-4">
+                <AnimatePresence>
+                  {blocks >= 1 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-blue-500 rounded border-2 border-blue-600 shadow-sm relative z-10 -mb-1 mx-auto"></motion.div>}
+                  {blocks >= 2 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-green-500 rounded border-2 border-green-600 shadow-sm relative z-10 -mb-1 mx-auto"></motion.div>}
+                  {blocks >= 3 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-red-500 rounded border-2 border-red-600 shadow-sm relative z-10 mx-auto"></motion.div>}
+                </AnimatePresence>
+              </div>
 
-              <button 
-                onClick={runStacking} 
-                className={`mt-12 w-full py-4 text-lg font-bold bg-brand text-brand-foreground rounded-2xl transition-all relative z-20 ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
-                disabled={running}
-              >
-                {running ? 'Stacking in progress...' : 'Run Stacking Demonstration'}
-              </button>
+              <div className="w-full flex flex-col gap-3 mt-4 relative z-20">
+                <input 
+                  type="text" 
+                  value={robotIp} 
+                  onChange={(e) => setRobotIp(e.target.value)} 
+                  placeholder="Robot IP (e.g. 192.168.1.10)"
+                  className="w-full p-2 border rounded text-sm bg-background text-foreground" 
+                />
+                <select value={location} onChange={(e) => setLocation(e.target.value)} className="w-full p-2 border rounded bg-background text-foreground text-sm">
+                  <option value="number1">Position 1</option>
+                  <option value="number2">Position 2</option>
+                  <option value="number3">Position 3</option>
+                  <option value="red">Red</option>
+                  <option value="green">Green</option>
+                  <option value="blue">Blue</option>
+                </select>
+                <select value={count} onChange={(e) => setCount(e.target.value)} className="w-full p-2 border rounded bg-background text-foreground text-sm">
+                  <option value="1">1 block</option>
+                  <option value="2">2 blocks</option>
+                  <option value="3">3 blocks</option>
+                </select>
+
+                <button 
+                  onClick={runStacking} 
+                  className={`w-full py-3 text-lg font-bold bg-brand text-brand-foreground rounded-2xl transition-all ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
+                  disabled={running}
+                >
+                  {running ? 'Stacking...' : 'Stack'}
+                </button>
+                <div className="text-sm text-muted-foreground font-mono">{status}</div>
+              </div>
             </div>
           </div>
         </Reveal>
