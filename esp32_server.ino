@@ -53,9 +53,8 @@ const char htmlPage[] PROGMEM = R"rawliteral(
     <option value="number1">Position 1</option>
     <option value="number2">Position 2</option>
     <option value="number3">Position 3</option>
-    <option value="red">Red</option>
-    <option value="green">Green</option>
-    <option value="blue">Blue</option>
+    <option value="number4">Position 4</option>
+    <option value="number5">Position 5</option>
   </select>
   <select id="count">
     <option value="1">1 block</option>

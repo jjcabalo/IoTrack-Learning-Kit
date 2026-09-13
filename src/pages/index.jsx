@@ -1117,9 +1117,8 @@ function Module5({ currentStep, onNext, nextTitle }) {
     { value: 'number1', label: 'Position 1' },
     { value: 'number2', label: 'Position 2' },
     { value: 'number3', label: 'Position 3' },
-    { value: 'red', label: 'Red Zone' },
-    { value: 'green', label: 'Green Zone' },
-    { value: 'blue', label: 'Blue Zone' }
+    { value: 'number4', label: 'Position 4' },
+    { value: 'number5', label: 'Position 5' }
   ];
 
   const countOptions = [
