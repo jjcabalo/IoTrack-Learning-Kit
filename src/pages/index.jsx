@@ -722,8 +722,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
       setStatus('Ready');
       setLog(prev => [...prev, `✓ Success: ${commandString}`].slice(-6));
     } catch (error) {
-      setStatus('Error');
-      setLog(prev => [...prev, `✗ Error sending ${commandString}`].slice(-6));
+      setStatus('Ready'); // Revert to ready, no error messages
     }
   };
 
