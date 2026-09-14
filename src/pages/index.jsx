@@ -699,8 +699,8 @@ function Module1({ currentStep, onNext, nextTitle }) {
 function Module2({ currentStep, onNext, nextTitle }) {
   const [cmd, setCmd] = useState('None');
   const [status, setStatus] = useState('Ready');
-  const [pos, setPos] = useState({ x: 0, y: 0 });
   const [log, setLog] = useState(['Controller ready.', 'Waiting for a movement command...']);
+  const [robotIp, setRobotIp] = useState('192.168.x.x');
 
   const q2 = [
     { question: "How is a servo motor different from a standard DC motor?", options: [{text: "It spins much faster", isCorrect: false}, {text: "It moves to precise angles rather than spinning endlessly", isCorrect: true}, {text: "It cannot be controlled by a microcontroller", isCorrect: false}] },
@@ -710,29 +710,21 @@ function Module2({ currentStep, onNext, nextTitle }) {
     { question: "If you tell the servo to move to 90°, what happens?", options: [{text: "It spins 90 times per second", isCorrect: false}, {text: "It moves to the 90° position and holds it", isCorrect: true}, {text: "It powers off for 90 seconds", isCorrect: false}] }
   ];
 
-  const moveRobot = (c) => {
-    setCmd(c);
-    if (c === 'STOP') {
-      setStatus('STOPPED');
-      setLog(prev => [...prev, '■ STOP command sent']);
-      return;
-    }
-    setStatus('Moving...');
-    let newX = pos.x;
-    let newY = pos.y;
-    if (c === 'LEFT') newX--;
-    if (c === 'RIGHT') newX++;
-    if (c === 'UP') newY++;
-    if (c === 'DOWN') newY--;
-    if (c === 'HOME') { newX = 0; newY = 0; }
+  const sendCommand = async (commandString) => {
+    setCmd(commandString);
+    setStatus('Sending...');
+    setLog(prev => [...prev, `→ ${commandString}`].slice(-6));
     
-    setPos({ x: newX, y: newY });
-    setLog(prev => [...prev, `→ ${c} command sent`]);
-
-    setTimeout(() => {
+    try {
+      const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(commandString));
+      if (!response.ok) throw new Error("Failed");
+      
       setStatus('Ready');
-      setLog(prev => [...prev, `✓ Robot acknowledged ${c}`]);
-    }, 450);
+      setLog(prev => [...prev, `✓ Success: ${commandString}`].slice(-6));
+    } catch (error) {
+      setStatus('Error');
+      setLog(prev => [...prev, `✗ Error sending ${commandString}`].slice(-6));
+    }
   };
 
   return (
@@ -760,12 +752,12 @@ function Module2({ currentStep, onNext, nextTitle }) {
 
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-background rounded-xl p-5 border border-border shadow-sm">
-                <strong className="block text-brand text-lg mb-2">Base & Elbow</strong>
-                <p className="text-base text-muted-foreground">The base rotates left and right, while the elbow reaches forward and back. Together, they aim the arm.</p>
+                <strong className="block text-brand text-lg mb-2">Base & Shoulder</strong>
+                <p className="text-base text-muted-foreground">The base rotates left and right, while the shoulder tilts the entire arm assembly forward and backward.</p>
               </div>
               <div className="bg-background rounded-xl p-5 border border-border shadow-sm">
-                <strong className="block text-brand text-lg mb-2">Wrist & Gripper</strong>
-                <p className="text-base text-muted-foreground">The wrist tilts the claw up or down, and the gripper opens and closes to grab objects.</p>
+                <strong className="block text-brand text-lg mb-2">Elbow & Claw</strong>
+                <p className="text-base text-muted-foreground">The elbow bends the middle joint, and the claw (gripper) opens and closes to grab objects.</p>
               </div>
             </div>
           </div>
@@ -777,47 +769,43 @@ function Module2({ currentStep, onNext, nextTitle }) {
           <div className="glass border-t-4 border-t-brand rounded-2xl p-8 shadow-glow relative overflow-hidden">
             <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft mb-4 relative z-10"><Play className="w-5 h-5" fill="currentColor"/></div>
             <h2 className="text-2xl font-bold mb-4 relative z-10">Activity: Manual Controller</h2>
+            <p className="text-muted-foreground mb-6 text-base relative z-10">Use these controls to jog each joint individually by a small amount (5&deg; per tap).</p>
             
-            <div className="grid md:grid-cols-2 gap-10 mt-6 relative z-10">
-              <div className="bg-background rounded-3xl p-6 border border-border shadow-inner">
-                <div className="grid grid-cols-3 grid-rows-3 gap-3 place-items-center max-w-[250px] mx-auto">
-                  <div />
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('UP')}>
-                    <ChevronUp className="w-8 h-8" />
-                  </button>
-                  <div />
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('LEFT')}>
-                    <ChevronLeft className="w-8 h-8" />
-                  </button>
-                  <button className="bg-secondary text-secondary-foreground w-16 h-16 rounded-2xl text-xs font-bold hover:bg-secondary/80 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('HOME')}>HOME</button>
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('RIGHT')}>
-                    <ChevronRight className="w-8 h-8" />
-                  </button>
-                  <div />
-                  <button className="bg-primary text-primary-foreground w-16 h-16 rounded-2xl text-2xl font-bold hover:bg-primary/90 shadow-soft hover:scale-105 transition-all flex items-center justify-center" onClick={() => moveRobot('DOWN')}>
-                    <ChevronDown className="w-8 h-8" />
-                  </button>
-                  <div />
+            <div className="grid md:grid-cols-2 gap-10 mt-2 relative z-10">
+              <div className="bg-background rounded-3xl p-6 border border-border shadow-inner flex flex-col gap-4">
+                
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Robot IP Address</label>
+                  <input 
+                    type="text" 
+                    value={robotIp} 
+                    onChange={(e) => setRobotIp(e.target.value)} 
+                    placeholder="e.g. 192.168.1.10"
+                    className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
+                  />
                 </div>
-                <div className="flex gap-3 justify-center mt-6">
-                  <MagneticButton onClick={() => moveRobot('GRAB')} className="flex-1 py-4">Grab</MagneticButton>
-                  <MagneticButton onClick={() => moveRobot('RELEASE')} variant="ghost" className="flex-1 py-4 bg-muted border border-border text-foreground">Release</MagneticButton>
+
+                <div className="grid grid-cols-1 gap-3 mt-2">
+                   {['Base', 'Shoulder', 'Elbow', 'Claw'].map(joint => (
+                     <div key={joint} className="flex items-center gap-3 bg-muted/30 p-3 rounded-xl border border-border/50">
+                       <span className="w-24 font-bold text-sm tracking-wide uppercase">{joint}</span>
+                       <button className="flex-1 py-3 bg-background border border-border rounded-lg shadow-sm hover:bg-muted hover:border-brand/50 transition-all font-bold text-xl flex items-center justify-center select-none active:scale-95" onClick={() => sendCommand(`${joint.toLowerCase()} -`)}>&minus;</button>
+                       <button className="flex-1 py-3 bg-background border border-border rounded-lg shadow-sm hover:bg-muted hover:border-brand/50 transition-all font-bold text-xl flex items-center justify-center select-none active:scale-95" onClick={() => sendCommand(`${joint.toLowerCase()} +`)}>+</button>
+                     </div>
+                   ))}
                 </div>
-                <button className="w-full bg-destructive/10 text-destructive font-bold py-4 rounded-xl mt-3 hover:bg-destructive/20 border border-destructive/20 transition-colors flex items-center justify-center gap-2" onClick={() => moveRobot('STOP')}>
-                  <div className="w-4 h-4 bg-destructive rounded-sm"></div> Emergency Stop
-                </button>
+
               </div>
 
               <div className="flex flex-col gap-4">
                 <div className="bg-background border border-border rounded-2xl p-6 text-sm shadow-sm flex-1">
                   <h3 className="font-bold text-xl mb-4 flex items-center gap-2"><Target className="w-5 h-5 text-brand" /> Telemetry</h3>
-                  <div className="flex justify-between py-3 border-b border-border"><span className="text-muted-foreground text-base">Robot status</span><span className={`font-bold text-base ${status === 'Ready' ? 'text-green-500' : status === 'STOPPED' ? 'text-red-500' : 'text-brand'}`}>{status}</span></div>
-                  <div className="flex justify-between py-3 border-b border-border"><span className="text-muted-foreground text-base">Last command</span><span className="font-bold font-mono bg-muted px-2 py-0.5 rounded text-base text-foreground">{cmd}</span></div>
-                  <div className="flex justify-between py-3"><span className="text-muted-foreground text-base">Position</span><span className="font-bold bg-brand/10 text-brand px-2 py-0.5 rounded border border-brand/20 text-base">{pos.x === 0 && pos.y === 0 ? 'Home' : `X: ${pos.x}, Y: ${pos.y}`}</span></div>
+                  <div className="flex justify-between py-3 border-b border-border"><span className="text-muted-foreground text-base">Robot status</span><span className={`font-bold text-base ${status === 'Ready' ? 'text-green-500' : status === 'Error' ? 'text-red-500' : 'text-brand'}`}>{status}</span></div>
+                  <div className="flex justify-between py-3"><span className="text-muted-foreground text-base">Last command</span><span className="font-bold font-mono bg-muted px-2 py-0.5 rounded text-base text-foreground">{cmd}</span></div>
                 </div>
-                <div className="bg-[#0a0a0a] border border-border/50 text-green-400 p-5 rounded-2xl font-mono text-sm h-40 overflow-y-auto shadow-inner">
+                <div className="bg-[#0a0a0a] border border-border/50 text-green-400 p-5 rounded-2xl font-mono text-sm h-48 overflow-y-auto shadow-inner flex flex-col justify-end">
                   <div className="text-muted-foreground mb-2 opacity-50">Terminal Output //</div>
-                  {log.map((l, i) => <div key={i} className="mb-1 opacity-90 hover:opacity-100">{l}</div>)}
+                  {log.map((l, i) => <div key={i} className={`mb-1 opacity-90 hover:opacity-100 ${l.includes('✗') ? 'text-red-400' : ''}`}>{l}</div>)}
                 </div>
               </div>
             </div>

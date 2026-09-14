@@ -43,6 +43,27 @@ const char htmlPage[] PROGMEM = R"rawliteral(
     }
     button:active { background: #1a4971; }
     #status { margin-top: 20px; color: #444; }
+
+    .jog-row {
+      display: flex;
+      max-width: 300px;
+      margin: 6px auto;
+      gap: 8px;
+    }
+    .jog-row span {
+      flex: 1;
+      font-size: 15px;
+      align-self: center;
+      text-align: left;
+      padding-left: 4px;
+    }
+    .jog-row button {
+      flex: 1;
+      margin: 0;
+      padding: 12px;
+      background: #4a5568;
+    }
+    .jog-row button:active { background: #2d3748; }
   </style>
 </head>
 <body>
@@ -65,6 +86,28 @@ const char htmlPage[] PROGMEM = R"rawliteral(
 
   <h2>Color sorting</h2>
   <button onclick="sendCommand('sort')">Sort (1 block each: red/green/blue)</button>
+
+  <h2>Manual jog control (5&deg; per tap)</h2>
+  <div class="jog-row">
+    <span>Base</span>
+    <button onclick="sendCommand('base -')">&minus;</button>
+    <button onclick="sendCommand('base +')">+</button>
+  </div>
+  <div class="jog-row">
+    <span>Shoulder</span>
+    <button onclick="sendCommand('shoulder -')">&minus;</button>
+    <button onclick="sendCommand('shoulder +')">+</button>
+  </div>
+  <div class="jog-row">
+    <span>Elbow</span>
+    <button onclick="sendCommand('elbow -')">&minus;</button>
+    <button onclick="sendCommand('elbow +')">+</button>
+  </div>
+  <div class="jog-row">
+    <span>Claw</span>
+    <button onclick="sendCommand('claw -')">&minus;</button>
+    <button onclick="sendCommand('claw +')">+</button>
+  </div>
 
   <div id="status">Ready</div>
 
