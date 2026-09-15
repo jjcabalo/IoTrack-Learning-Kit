@@ -1399,7 +1399,7 @@ export default function Home() {
   return (
     <>
       <IntroAnimation show={showIntro} />
-      <NameModal />
+      {!showIntro && <NameModal />}
       <CourseCompletionAnimation show={showCompletion} onClose={() => setShowCompletion(false)} />
       
       <div className={`h-screen flex flex-col overflow-hidden bg-background text-foreground font-sans selection:bg-brand/20 ${showIntro ? 'opacity-0' : 'opacity-100 transition-opacity duration-700'}`}>
