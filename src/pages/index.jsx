@@ -220,7 +220,7 @@ export const COURSE_MODULES = [
   { id: 'pretest', num: 'Assessment', title: 'Course Pre-Test', items: [{ title: 'Pre-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
   { id: 1, title: 'IoTrack Introduction', items: [{ title: 'What is IoTrack', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'What is IoT', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'The Hardware behind the kit', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }, { title: 'Prerequisite Activity', icon: <Play className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 2, title: 'Robot Arm Control', items: [{ title: 'How the robotic arm works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Robotic arm movement', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
-  { id: 3, title: 'Sensors & Data', items: [{ title: 'How the sensors works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Read Sensor Data', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
+  { id: 3, title: 'Sensors & Data', items: [{ title: 'How the sensors works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 4, title: 'Color Detection', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 5, title: 'Stacking', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 'posttest', num: 'Assessment', title: 'Course Post-Test', items: [{ title: 'Post-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
@@ -824,10 +824,6 @@ function Module2({ currentStep, onNext, nextTitle }) {
 }
 
 function Module3({ currentStep, onNext, nextTitle }) {
-  const [rgb, setRgb] = useState({ r: '—', g: '—', b: '—' });
-  const [detected, setDetected] = useState('Waiting');
-  const [status, setStatus] = useState('Ready');
-
   const q3 = [
     { question: "If the sensor returns R: 200, G: 50, B: 30, what will the controller interpret?", options: [{text: "Red", isCorrect: true}, {text: "Green", isCorrect: false}, {text: "Blue", isCorrect: false}] },
     { question: "What does an RGB color sensor do?", options: [{text: "Takes photographs of objects", isCorrect: false}, {text: "Measures the reflection of Red, Green, and Blue light", isCorrect: true}, {text: "Measures the weight of an object", isCorrect: false}] },
@@ -835,18 +831,6 @@ function Module3({ currentStep, onNext, nextTitle }) {
     { question: "How does the ESP32 determine the color of the object?", options: [{text: "By looking at the object", isCorrect: false}, {text: "By finding the lowest channel value", isCorrect: false}, {text: "By comparing the R, G, and B values to find the highest", isCorrect: true}] },
     { question: "What happens if an object reflects very little light overall?", options: [{text: "The readings will all be close to 0", isCorrect: true}, {text: "The readings will all be close to 255", isCorrect: false}, {text: "The sensor breaks", isCorrect: false}] }
   ];
-
-  const readSensors = () => {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    setRgb({ r, g, b });
-    let color = 'RED';
-    if (g >= r && g >= b) color = 'GREEN';
-    if (b >= r && b >= g) color = 'BLUE';
-    setDetected(color);
-    setStatus('Reading received ✓');
-  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -887,48 +871,6 @@ function Module3({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 1 && (
         <Reveal delay={0.1}>
-          <div className="glass border-t-4 border-t-brand border border-brand/30 rounded-2xl p-8 shadow-glow relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft mb-4 relative z-10"><Play className="w-5 h-5" fill="currentColor"/></div>
-            <h2 className="text-2xl font-bold mb-4 relative z-10">Activity: Read Sensor Data</h2>
-            
-            <p className="text-muted-foreground mb-6 text-base md:text-lg">Click the button below to simulate reading data from the color sensor.</p>
-            
-            <button onClick={readSensors} className="w-full md:w-auto px-10 py-4 mb-8 text-lg bg-brand text-brand-foreground font-bold rounded-2xl hover:bg-brand/90 hover:shadow-glow transition-all">Poll Sensor Array</button>
-            
-            <div className="grid sm:grid-cols-3 gap-6 mb-8">
-              <div className="bg-background border-t-4 border-t-red-500 p-6 rounded-2xl shadow-sm text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-red-500/5"></div>
-                <span className="text-muted-foreground text-sm block mb-2 font-bold uppercase tracking-wider relative z-10">Red Channel</span>
-                <b className="text-5xl font-display text-red-500 relative z-10">{rgb.r}</b>
-              </div>
-              <div className="bg-background border-t-4 border-t-green-500 p-6 rounded-2xl shadow-sm text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-green-500/5"></div>
-                <span className="text-muted-foreground text-sm block mb-2 font-bold uppercase tracking-wider relative z-10">Green Channel</span>
-                <b className="text-5xl font-display text-green-500 relative z-10">{rgb.g}</b>
-              </div>
-              <div className="bg-background border-t-4 border-t-blue-500 p-6 rounded-2xl shadow-sm text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-blue-500/5"></div>
-                <span className="text-muted-foreground text-sm block mb-2 font-bold uppercase tracking-wider relative z-10">Blue Channel</span>
-                <b className="text-5xl font-display text-blue-500 relative z-10">{rgb.b}</b>
-              </div>
-            </div>
-
-            <div className="bg-background border border-border rounded-xl p-5 text-sm flex justify-between items-center">
-              <div>
-                 <div className="text-muted-foreground mb-1 uppercase tracking-wider text-xs font-bold">Interpreted Classification</div>
-                 <div className={`text-2xl font-bold ${detected === 'RED' ? 'text-red-500' : detected === 'GREEN' ? 'text-green-500' : detected === 'BLUE' ? 'text-blue-500' : 'text-foreground'}`}>{detected}</div>
-              </div>
-              <div className="text-right">
-                 <div className="text-muted-foreground mb-1 uppercase tracking-wider text-xs font-bold">System Status</div>
-                 <div className="font-bold text-green-500 text-lg">{status}</div>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      )}
-
-      {currentStep === 2 && (
-        <Reveal delay={0.1}>
           <QuickCheck questions={q3} />
         </Reveal>
       )}
@@ -941,6 +883,7 @@ function Module3({ currentStep, onNext, nextTitle }) {
 function Module4({ currentStep, onNext, nextTitle }) {
   const [running, setRunning] = useState(false);
   const [color, setColor] = useState('none');
+  const [robotIp, setRobotIp] = useState('192.168.x.x');
 
   const q4 = [
     { question: "What is a closed-loop sequence?", options: [{text: "A loop that never ends", isCorrect: false}, {text: "A sequence that uses sensor feedback to make decisions", isCorrect: true}, {text: "A loop that only goes backwards", isCorrect: false}] },
@@ -953,10 +896,15 @@ function Module4({ currentStep, onNext, nextTitle }) {
   const runSorting = async () => {
     setRunning(true);
     setColor('scanning');
+    
+    // Fire the command to the robot but don't let it block the animation
+    fetch(`http://${robotIp}/cmd?value=colorsort`).catch(() => {});
+    
     await wait(1000);
     const colors = ['red', 'green', 'blue'];
     setColor(colors[Math.floor(Math.random() * colors.length)]);
     await wait(2000);
+    
     setRunning(false);
     setColor('none');
   };
@@ -976,10 +924,22 @@ function Module4({ currentStep, onNext, nextTitle }) {
         <Reveal delay={0.2}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-10 shadow-soft text-center">
             <h2 className="text-2xl font-bold mb-4">Activity: Run Sorting</h2>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Click below to simulate the robot picking a block, reading its color, and placing it in the correct bin based on what it senses.</p>
+            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Click below to command the robot to pick a block, read its color, and place it in the correct bin based on what it senses.</p>
             
-            <div className="bg-background border border-border p-8 rounded-3xl max-w-sm mx-auto shadow-inner relative">
-              <div className={`w-32 h-32 mx-auto rounded-full border-8 mb-6 flex items-center justify-center shadow-inner transition-colors duration-500
+            <div className="bg-background border border-border p-8 rounded-3xl max-w-sm mx-auto shadow-inner relative flex flex-col gap-6">
+              
+              <div className="text-left w-full">
+                <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Robot IP Address</label>
+                <input 
+                  type="text" 
+                  value={robotIp} 
+                  onChange={(e) => setRobotIp(e.target.value)} 
+                  placeholder="e.g. 192.168.1.10"
+                  className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
+                />
+              </div>
+
+              <div className={`w-32 h-32 mx-auto rounded-full border-8 flex items-center justify-center shadow-inner transition-colors duration-500
                 ${color === 'none' ? 'bg-muted border-border' : ''}
                 ${color === 'scanning' ? 'bg-brand/20 border-brand animate-pulse' : ''}
                 ${color === 'red' ? 'bg-red-500 border-red-600 shadow-[0_0_30px_rgba(239,68,68,0.5)]' : ''}

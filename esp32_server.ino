@@ -5,8 +5,8 @@
 HardwareSerial espSerial(1);
 
 // ===================== WIFI SETTINGS =====================
-const char* ssid     = "HUAWEI-2.4G-E8Ev";
-const char* password = "njDQ6K5x";
+const char* ssid     = "vivo V21e";
+const char* password = "11111111";
 
 // ===================== SERIAL LINK TO UNO =====================
 // GPIO16 = RX (receives from Uno TX, through the voltage divider)
@@ -76,6 +76,9 @@ const char htmlPage[] PROGMEM = R"rawliteral(
     <option value="number3">Position 3</option>
     <option value="number4">Position 4</option>
     <option value="number5">Position 5</option>
+    <option value="red">Red</option>
+    <option value="green">Green</option>
+    <option value="blue">Blue</option>
   </select>
   <select id="count">
     <option value="1">1 block</option>
@@ -85,7 +88,7 @@ const char htmlPage[] PROGMEM = R"rawliteral(
   <button onclick="sendStack()">Stack</button>
 
   <h2>Color sorting</h2>
-  <button onclick="sendCommand('sort')">Sort (1 block each: red/green/blue)</button>
+  <button onclick="sendCommand('colorsort')">Color Sort (scans block, sorts 1)</button>
 
   <h2>Manual jog control (5&deg; per tap)</h2>
   <div class="jog-row">
@@ -141,7 +144,7 @@ void handleRoot() {
 
 void handleCommand() {
   if (server.hasArg("value")) {
-    String cmd = server.arg("value");   // e.g. "stack number1 3" or "sort"
+    String cmd = server.arg("value");   // e.g. "stack number1 3", "sort", "colorsort", "elbow +"
 
     unoSerial.println(cmd);   // forward exactly as-is to the Uno
     Serial.print("Sent to Uno: ");
