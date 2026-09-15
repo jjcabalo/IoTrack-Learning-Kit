@@ -359,6 +359,7 @@ function Sidebar({ currentModule, setCurrentModule, currentStep, setCurrentStep,
 function RightSidebar({ maxUnlockedAbsoluteStep }) {
   const [notesOpen, setNotesOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
+  const { isDone } = useScore();
 
   React.useEffect(() => {
     const saved = localStorage.getItem('iotrack-notes');
@@ -372,7 +373,8 @@ function RightSidebar({ maxUnlockedAbsoluteStep }) {
 
   const totalSteps = COURSE_MODULES.reduce((sum, mod) => sum + mod.items.length, 0);
   
-  const progressPercent = Math.min(100, Math.round(((maxUnlockedAbsoluteStep - 1) / totalSteps) * 100));
+  let progressPercent = Math.min(100, Math.round(((maxUnlockedAbsoluteStep - 1) / totalSteps) * 100));
+  if (isDone) progressPercent = 100;
 
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
