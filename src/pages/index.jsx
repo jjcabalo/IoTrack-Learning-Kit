@@ -629,7 +629,7 @@ function Module1({ currentStep, onNext, nextTitle }) {
               </div>
               <div className="bg-background rounded-xl p-5 border border-border shadow-sm">
                 <div className="flex items-center gap-3 mb-3"><Cpu className="w-5 h-5 text-brand" /><strong className="text-lg text-foreground">Controllers</strong></div>
-                <p className="text-base text-muted-foreground">The "brain" of the device (like the ESP32) that makes decisions based on data.</p>
+                <p className="text-base text-muted-foreground">The "brain" of the device (like the Arduino UNO) that makes decisions based on data.</p>
               </div>
               <div className="bg-background rounded-xl p-5 border border-border shadow-sm">
                 <div className="flex items-center gap-3 mb-3"><Radio className="w-5 h-5 text-brand" /><strong className="text-lg text-foreground">Connectivity</strong></div>
@@ -640,6 +640,10 @@ function Module1({ currentStep, onNext, nextTitle }) {
                 <p className="text-base text-muted-foreground">Motors and moving parts that carry out physical actions, like the robot arm joints.</p>
               </div>
             </div>
+
+            <div className="mt-8 flex justify-center bg-background rounded-xl p-5 border border-border shadow-sm">
+              <img src="/module-images/graph%20module%201.svg" alt="Module 1 Graph" className="max-w-full h-auto object-contain rounded-lg" onError={(e) => { e.target.style.display='none'; }} />
+            </div>
           </div>
         </Reveal>
       )}
@@ -648,16 +652,64 @@ function Module1({ currentStep, onNext, nextTitle }) {
         <Reveal delay={0.1}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
             <BookOpen className="w-8 h-8 text-brand mb-3" />
-            <h2 className="text-2xl font-bold mb-4">The Hardware</h2>
-            <p className="text-muted-foreground mb-6 text-base md:text-lg">Here are the main components that make up the IoTrack kit.</p>
+            <h2 className="text-2xl font-bold mb-4">The Hardware behind the kit</h2>
+            <p className="text-muted-foreground mb-8 text-base md:text-lg">Here are the main components that make up the IoTrack kit.</p>
             
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm"><Cog className="w-6 h-6 text-brand mb-3"/><strong className="block text-foreground text-lg mb-1">Motors</strong><p className="text-base text-muted-foreground">Move the robot's joints and gripper.</p></div>
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm"><ScanLine className="w-6 h-6 text-brand mb-3"/><strong className="block text-foreground text-lg mb-1">Color Sensor</strong><p className="text-base text-muted-foreground">Detects object colors for sorting.</p></div>
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm"><Cpu className="w-6 h-6 text-brand mb-3"/><strong className="block text-foreground text-lg mb-1">ESP32 Chip</strong><p className="text-base text-muted-foreground">The main brain controlling the kit.</p></div>
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm"><Battery className="w-6 h-6 text-brand mb-3"/><strong className="block text-foreground text-lg mb-1">Power</strong><p className="text-base text-muted-foreground">Safe 5V supply for reliable operation.</p></div>
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm"><CircuitBoard className="w-6 h-6 text-brand mb-3"/><strong className="block text-foreground text-lg mb-1">Wiring</strong><p className="text-base text-muted-foreground">Connects all electronics together.</p></div>
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm"><Bot className="w-6 h-6 text-brand mb-3"/><strong className="block text-foreground text-lg mb-1">Frame</strong><p className="text-base text-muted-foreground">The mechanical structure of the arm.</p></div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/frame.svg" alt="Frame" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Frame</strong><p className="text-base text-muted-foreground">The mechanical structure of the arm.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/servo%20motor.svg" alt="Servo Motors" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Servo Motors</strong><p className="text-base text-muted-foreground">Move the robot's joints and gripper.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/color%20sensor.svg" alt="Color Sensor" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Color Sensor</strong><p className="text-base text-muted-foreground">Detects object colors for sorting.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/sensor%20shield.svg" alt="Sensor Shield" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Sensor Shield v5 Expansion Board</strong><p className="text-base text-muted-foreground">Connects multiple sensors and modules to the Arduino easily.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/arduino.svg" alt="Arduino UNO" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Arduino UNO</strong><p className="text-base text-muted-foreground">The main brain controlling the kit.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/esp%2032.svg" alt="ESP32 Wifi Module" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">ESP32 Wifi Module</strong><p className="text-base text-muted-foreground">Provides Wi-Fi connectivity for sending and receiving data wirelessly.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/power%20supply.svg" alt="Power Supply" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Power Supply</strong><p className="text-base text-muted-foreground">Safe 5V supply for reliable operation.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/wirings.svg" alt="Wiring" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Wiring</strong><p className="text-base text-muted-foreground">Connects all electronics together.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="h-40 w-full mb-4 flex items-center justify-center">
+                  <img src="/module-images/breadboard.svg" alt="Breadboard" className="w-full h-full object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
+                <strong className="block text-foreground text-xl mb-2">Breadboard</strong><p className="text-base text-muted-foreground">Allows components to be connected and tested without soldering.</p>
+              </div>
             </div>
           </div>
         </Reveal>
@@ -749,14 +801,27 @@ function Module2({ currentStep, onNext, nextTitle }) {
               <p className="text-base text-foreground/80">Understand how different joints work together to position the arm.</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm">
-                <strong className="block text-brand text-lg mb-2">Base & Shoulder</strong>
-                <p className="text-base text-muted-foreground">The base rotates left and right, while the shoulder tilts the entire arm assembly forward and backward.</p>
+            <div className="space-y-12 mt-8">
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="flex-1 space-y-4">
+                  <h3 className="text-2xl font-bold text-brand">Base & Shoulder</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">The base rotates left and right, while the shoulder tilts the entire arm assembly forward and backward.</p>
+                </div>
+                <div className="flex-1 w-full flex justify-center">
+                  <img src="/module-images/Base%20%26%20Shoulder.svg" alt="Base & Shoulder" className="w-full max-w-md object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
               </div>
-              <div className="bg-background rounded-xl p-5 border border-border shadow-sm">
-                <strong className="block text-brand text-lg mb-2">Elbow & Claw</strong>
-                <p className="text-base text-muted-foreground">The elbow bends the middle joint, and the claw (gripper) opens and closes to grab objects.</p>
+              
+              <div className="w-full h-px bg-border my-8"></div>
+              
+              <div className="flex flex-col md:flex-row-reverse gap-8 items-center">
+                <div className="flex-1 space-y-4">
+                  <h3 className="text-2xl font-bold text-brand">Elbow & Claw</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">The elbow bends the middle joint, and the claw (gripper) opens and closes to grab objects.</p>
+                </div>
+                <div className="flex-1 w-full flex justify-center">
+                  <img src="/module-images/Elbow%20%26%20Claw.svg" alt="Elbow & Claw" className="w-full max-w-md object-contain" onError={(e) => { e.target.style.display='none'; }} />
+                </div>
               </div>
             </div>
           </div>
