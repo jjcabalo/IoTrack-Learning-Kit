@@ -16,7 +16,7 @@ export default function NameModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md">
       <div className="bg-background border border-border p-8 rounded-2xl shadow-xl max-w-md w-full mx-4">
         <h2 className="text-2xl font-bold mb-2">Welcome to IoTrack!</h2>
         <p className="text-muted-foreground mb-6">
@@ -34,7 +34,7 @@ export default function NameModal() {
           />
           <button 
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors"
+            className="w-full bg-brand hover:bg-brand/90 text-brand-foreground py-3 rounded-xl font-semibold transition-colors shadow-glow"
           >
             Start Learning
           </button>
