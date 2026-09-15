@@ -3,6 +3,8 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import { BlobsBackground, FloatingParticles } from '../components/BackgroundElements';
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from 'framer-motion';
 import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, CheckCircle2, Circle, Award, Globe, HelpCircle, User, MessageSquare, Play, FileText, ClipboardList, ThumbsUp, ThumbsDown, Flag, Bookmark, ArrowRight, Video, Target, BookOpen, Lock, Menu, Wifi, Radar, Cpu, Radio, Zap, Cog, ScanLine, Battery, CircuitBoard, Cable, Bot } from 'lucide-react';
+import NameModal from '../components/NameModal';
+import { useScore } from '../context/ScoreContext';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -224,6 +226,7 @@ export const COURSE_MODULES = [
   { id: 4, title: 'Color Detection', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 5, title: 'Stacking', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 'posttest', num: 'Assessment', title: 'Course Post-Test', items: [{ title: 'Post-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
+  { id: 'endofcourse', num: 'Finish', title: 'Course Completion', items: [{ title: 'Submit Course', icon: <CheckCircle2 className="w-4 h-4"/>, meta: 'Submit' }] },
 ];
 
 export const getAbsoluteStep = (moduleId, step) => {
@@ -472,15 +475,7 @@ function RightSidebar({ maxUnlockedAbsoluteStep }) {
 
 function ContentActions({ nextTitle, onNext, isLast }) {
   if (isLast) {
-    return (
-      <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
-        <div className="flex w-full sm:w-auto">
-          <button onClick={() => { window.dispatchEvent(new Event('course-completed')); onNext(); }} className="px-6 py-3 rounded-2xl border border-border w-full sm:w-auto bg-brand text-brand-foreground transition-colors flex items-center justify-center gap-2 font-bold hover:bg-brand/90 hover:shadow-glow">
-            I'm Done <CheckCircle2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (!nextTitle) return null;
@@ -502,43 +497,44 @@ function ContentActions({ nextTitle, onNext, isLast }) {
   );
 }
 
-function QuickCheck({ questions }) {
-  const [answers, setAnswers] = useState({});
+function QuickCheck({ moduleId, questions }) {
+  const { recordAnswer, scores, isDone } = useScore();
 
-  const handleSelect = (qIndex, optionIndex, isCorrect) => {
-    if (answers[qIndex]?.isCorrect) return;
+  const handleSelect = (qIndex, optionIndex, isCorrect, questionText, optionText) => {
+    // If the module's specific question is already answered, or course is done, do nothing
+    if (scores[moduleId]?.[qIndex] || isDone) return;
     
-    setAnswers(prev => ({
-      ...prev,
-      [qIndex]: {
-        selected: optionIndex,
-        isCorrect: isCorrect,
-        tried: [...(prev[qIndex]?.tried || []), optionIndex]
-      }
-    }));
+    recordAnswer(moduleId, qIndex, isCorrect, questionText, optionText);
   };
 
   return (
     <div className="glass border-t-4 border-t-brand rounded-2xl p-6 shadow-soft">
       <ClipboardList className="w-8 h-8 text-brand mb-3" />
       <h2 className="text-2xl font-bold mb-3">Quick Check</h2>
-      <p className="text-muted-foreground mb-6 text-lg">Test your knowledge.</p>
+      <p className="text-muted-foreground mb-6 text-lg">Test your knowledge. Note: You only get 1 attempt per question.</p>
       <div className="space-y-6">
         {questions.map((q, qIndex) => (
           <div key={qIndex} className="bg-background p-5 rounded-xl border border-border">
             <p className="font-bold mb-3">{qIndex + 1}. {q.question}</p>
             <div className="space-y-2">
               {q.options.map((opt, optIndex) => {
-                const state = answers[qIndex];
-                const isCorrect = opt.isCorrect;
-                const hasTried = state?.tried?.includes(optIndex);
+                const answerState = scores[moduleId]?.[qIndex];
+                const hasAnswered = !!answerState;
+                const isSelected = answerState?.answerText === opt.text;
                 
                 let btnClass = "w-full text-left p-3 rounded-lg border transition-colors ";
                 
-                if (state?.isCorrect && isCorrect) {
-                  btnClass += "border-green-500 bg-green-500/10 font-bold text-green-600";
-                } else if (hasTried && !isCorrect) {
-                  btnClass += "border-red-500 bg-red-500/5 text-red-500 opacity-70 cursor-not-allowed";
+                if (hasAnswered) {
+                  if (isSelected && opt.isCorrect) {
+                    btnClass += "border-green-500 bg-green-500/10 font-bold text-green-600";
+                  } else if (isSelected && !opt.isCorrect) {
+                    btnClass += "border-red-500 bg-red-500/5 text-red-500 opacity-70";
+                  } else if (opt.isCorrect) {
+                     // Highlight the correct answer even if they got it wrong
+                    btnClass += "border-green-500 text-green-600";
+                  } else {
+                    btnClass += "border-border opacity-50";
+                  }
                 } else {
                   btnClass += "border-border hover:bg-muted";
                 }
@@ -546,11 +542,13 @@ function QuickCheck({ questions }) {
                 return (
                   <button 
                     key={optIndex} 
-                    disabled={state?.isCorrect || (hasTried && !isCorrect)}
-                    onClick={() => handleSelect(qIndex, optIndex, isCorrect)}
+                    disabled={hasAnswered || isDone}
+                    onClick={() => handleSelect(qIndex, optIndex, opt.isCorrect, q.question, opt.text)}
                     className={btnClass}
                   >
-                    {opt.text} {state?.isCorrect && isCorrect && " ✓"} {hasTried && !isCorrect && " ✗"}
+                    {opt.text} 
+                    {hasAnswered && isSelected && opt.isCorrect && " ✓"} 
+                    {hasAnswered && isSelected && !opt.isCorrect && " ✗"}
                   </button>
                 )
               })}
@@ -665,7 +663,7 @@ function Module1({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 3 && (
         <Reveal delay={0.1}>
-          <QuickCheck questions={q1} />
+          <QuickCheck moduleId="m1" questions={q1} />
         </Reveal>
       )}
 
@@ -814,7 +812,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 2 && (
         <Reveal delay={0.1}>
-          <QuickCheck questions={q2} />
+          <QuickCheck moduleId="m2" questions={q2} />
         </Reveal>
       )}
 
@@ -871,7 +869,7 @@ function Module3({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 1 && (
         <Reveal delay={0.1}>
-          <QuickCheck questions={q3} />
+          <QuickCheck moduleId="m3" questions={q3} />
         </Reveal>
       )}
 
@@ -964,7 +962,7 @@ function Module4({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 1 && (
         <Reveal delay={0.1}>
-          <QuickCheck questions={q4} />
+          <QuickCheck moduleId="m4" questions={q4} />
         </Reveal>
       )}
 
@@ -1136,7 +1134,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 1 && (
         <Reveal delay={0.1}>
-          <QuickCheck questions={q5} />
+          <QuickCheck moduleId="m5" questions={q5} />
         </Reveal>
       )}
 
@@ -1270,6 +1268,43 @@ function PostTest({ onNext, nextTitle }) {
           >Loading…</iframe>
         </div>
       </Reveal>
+      <ContentActions nextTitle={nextTitle} onNext={onNext} />
+    </motion.div>
+  );
+}
+
+function EndOfCourse({ onNext, nextTitle }) {
+  const { submitCourse, isDone, isSubmitting } = useScore();
+
+  const handleFinish = async () => {
+    const success = await submitCourse();
+    if (success) {
+      window.dispatchEvent(new Event('course-completed'));
+    }
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
+      <Reveal delay={0.1}>
+        <div className="hero bg-gradient-hero border border-border rounded-3xl p-8 shadow-soft">
+          <span className="inline-block px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold mb-4 border border-brand/20">FINISH</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 font-display">Course Completed</h1>
+          <p className="text-lg text-muted-foreground">You have completed the entire IoTrack Learning Session. Review your progress and submit your scores.</p>
+        </div>
+      </Reveal>
+      <Reveal delay={0.2}>
+        <div className="glass rounded-2xl overflow-hidden shadow-glow w-full p-8 border border-brand/30 relative flex flex-col items-center justify-center min-h-[300px]">
+          <Award className="w-16 h-16 text-brand mb-4" />
+          <h2 className="text-2xl font-bold mb-6">Ready to finish?</h2>
+          <button 
+            onClick={handleFinish}
+            disabled={isDone || isSubmitting}
+            className="px-8 py-4 bg-brand hover:bg-brand/90 text-brand-foreground rounded-xl font-bold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isSubmitting ? 'Submitting...' : isDone ? 'Scores Submitted ✓' : "I'm Done - Submit Course"}
+          </button>
+        </div>
+      </Reveal>
       <ContentActions nextTitle={nextTitle} onNext={onNext} isLast={true} />
     </motion.div>
   );
@@ -1364,6 +1399,7 @@ export default function Home() {
   return (
     <>
       <IntroAnimation show={showIntro} />
+      <NameModal />
       <CourseCompletionAnimation show={showCompletion} onClose={() => setShowCompletion(false)} />
       
       <div className={`h-screen flex flex-col overflow-hidden bg-background text-foreground font-sans selection:bg-brand/20 ${showIntro ? 'opacity-0' : 'opacity-100 transition-opacity duration-700'}`}>
@@ -1394,6 +1430,7 @@ export default function Home() {
               {currentModule === 'overview' && <CourseOverview key="overview" onNext={handleNext} nextTitle={nextTitle} />}
               {currentModule === 'pretest' && <PreTest key="pre" onNext={handleNext} nextTitle={nextTitle} />}
               {currentModule === 'posttest' && <PostTest key="post" onNext={handleNext} nextTitle={nextTitle} />}
+              {currentModule === 'endofcourse' && <EndOfCourse key="endofcourse" onNext={handleNext} nextTitle={nextTitle} />}
             </AnimatePresence>
           </div>
         </main>
