@@ -2,32 +2,43 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabase';
 import { CSVLink } from 'react-csv';
 import Head from 'next/head';
-import { Award, Download, Users, CheckCircle2 } from 'lucide-react';
+import { Award, Download, Users, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminScores() {
   const [scores, setScores] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    async function fetchScores() {
-      try {
-        const { data, error } = await supabase
-          .from('student_scores')
-          .select('*')
-          .order('submitted_at', { ascending: false });
-
-        if (error) throw error;
-        setScores(data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === 'IoTr4ck@dm1n27399') {
+      setIsAuthenticated(true);
+      fetchScores();
+    } else {
+      alert('Incorrect password');
+      setPassword('');
     }
+  };
 
-    fetchScores();
-  }, []);
+  async function fetchScores() {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('student_scores')
+        .select('*')
+        .order('submitted_at', { ascending: false });
+
+      if (error) throw error;
+      setScores(data || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const csvHeaders = [
     { label: "Student Name", key: "student_name" },
@@ -42,6 +53,51 @@ export default function AdminScores() {
     max_score: row.max_score,
     submitted_at: new Date(row.submitted_at).toLocaleString()
   }));
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+        <Head>
+          <title>Admin Login | IoTrack</title>
+        </Head>
+        <div className="glass p-8 rounded-2xl max-w-md w-full border border-border shadow-xl">
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center">
+              <Users className="w-8 h-8 text-brand" />
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-center mb-2">Admin Access</h1>
+          <p className="text-muted-foreground text-center mb-8">Enter the password to view student scores.</p>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                className="w-full pl-4 pr-12 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-brand text-foreground"
+                required
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-brand hover:bg-brand/90 text-brand-foreground py-3 rounded-xl font-bold transition-colors shadow-glow"
+            >
+              Access Dashboard
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
