@@ -475,7 +475,7 @@ function RightSidebar({ maxUnlockedAbsoluteStep }) {
   );
 }
 
-function ContentActions({ nextTitle, onNext, isLast }) {
+function ContentActions({ nextTitle, onNext, isLast, canProceed = true }) {
   if (isLast) {
     return null;
   }
@@ -490,10 +490,20 @@ function ContentActions({ nextTitle, onNext, isLast }) {
           {nextTitle}
         </h3>
       </div>
-      <div className="flex w-full sm:w-auto">
-        <button onClick={onNext} className="px-6 py-3 rounded-2xl border border-border w-full sm:w-auto bg-background/50 hover:bg-background transition-colors flex items-center justify-center gap-2 font-bold hover:shadow-sm">
+      <div className="flex w-full sm:w-auto flex-col sm:items-end gap-3">
+        <button 
+          onClick={onNext} 
+          disabled={!canProceed}
+          className={`px-6 py-3 rounded-2xl border border-border w-full sm:w-auto transition-colors flex items-center justify-center gap-2 font-bold ${!canProceed ? 'bg-muted text-muted-foreground opacity-50 cursor-not-allowed' : 'bg-brand text-brand-foreground hover:bg-brand/90 hover:shadow-glow'}`}
+        >
           Continue <ArrowRight className="w-4 h-4" />
         </button>
+        {!canProceed && (
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-500 bg-amber-500/10 border border-amber-500/20 px-3 py-2 rounded-xl w-full justify-center">
+            <Lock className="w-3.5 h-3.5" />
+            <span>Complete the Quick Check to unlock</span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -582,6 +592,9 @@ function Module1({ currentStep, onNext, nextTitle }) {
     { question: "How does the kit communicate?", options: [{text: "Only through USB", isCorrect: false}, {text: "It does not communicate", isCorrect: false}, {text: "Via Wi-Fi and Bluetooth", isCorrect: true}] },
     { question: "What provides power to the kit?", options: [{text: "Solar Panels", isCorrect: false}, {text: "5V Power Supply", isCorrect: true}, {text: "AAA Batteries", isCorrect: false}] }
   ];
+
+  const { scores } = useScore();
+  const canProceed = currentStep !== 3 || q1.every((_, idx) => scores['m1']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -743,7 +756,7 @@ function Module1({ currentStep, onNext, nextTitle }) {
         </Reveal>
       )}
 
-      <ContentActions nextTitle={nextTitle} onNext={onNext} />
+      <ContentActions nextTitle={nextTitle} onNext={onNext} canProceed={canProceed} />
     </motion.div>
   );
 }
@@ -777,6 +790,9 @@ function Module2({ currentStep, onNext, nextTitle }) {
       setStatus('Ready'); // Revert to ready, no error messages
     }
   };
+
+  const { scores } = useScore();
+  const canProceed = currentStep !== 2 || q2.every((_, idx) => scores['m2']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -883,7 +899,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
         </Reveal>
       )}
 
-      <ContentActions nextTitle={nextTitle} onNext={onNext} />
+      <ContentActions nextTitle={nextTitle} onNext={onNext} canProceed={canProceed} />
     </motion.div>
   );
 }
@@ -896,6 +912,9 @@ function Module3({ currentStep, onNext, nextTitle }) {
     { question: "How does the ESP32 determine the color of the object?", options: [{text: "By looking at the object", isCorrect: false}, {text: "By finding the lowest channel value", isCorrect: false}, {text: "By comparing the R, G, and B values to find the highest", isCorrect: true}] },
     { question: "What happens if an object reflects very little light overall?", options: [{text: "The readings will all be close to 0", isCorrect: true}, {text: "The readings will all be close to 255", isCorrect: false}, {text: "The sensor breaks", isCorrect: false}] }
   ];
+
+  const { scores } = useScore();
+  const canProceed = currentStep !== 1 || q3.every((_, idx) => scores['m3']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -940,7 +959,7 @@ function Module3({ currentStep, onNext, nextTitle }) {
         </Reveal>
       )}
 
-      <ContentActions nextTitle={nextTitle} onNext={onNext} />
+      <ContentActions nextTitle={nextTitle} onNext={onNext} canProceed={canProceed} />
     </motion.div>
   );
 }
@@ -973,6 +992,9 @@ function Module4({ currentStep, onNext, nextTitle }) {
     setRunning(false);
     setColor('none');
   };
+
+  const { scores } = useScore();
+  const canProceed = currentStep !== 1 || q4.every((_, idx) => scores['m4']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -1139,6 +1161,9 @@ function Module5({ currentStep, onNext, nextTitle }) {
     { value: '3', label: '3 blocks' }
   ];
 
+  const { scores } = useScore();
+  const canProceed = currentStep !== 1 || q5.every((_, idx) => scores['m5']?.[idx]);
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
       
@@ -1205,7 +1230,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
         </Reveal>
       )}
 
-      <ContentActions nextTitle={nextTitle} onNext={onNext} />
+      <ContentActions nextTitle={nextTitle} onNext={onNext} canProceed={canProceed} />
     </motion.div>
   );
 }
