@@ -1342,8 +1342,8 @@ function Module5({ currentStep, onNext, nextTitle }) {
       {currentStep === 0 && (
         <Reveal delay={0.2}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-10 shadow-soft text-center">
-            <h2 className="text-2xl font-bold mb-4">Activity: Run Stacking & Mixing</h2>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Try stacking blocks in one location, or mixing them across different positions.</p>
+            <h2 className="text-2xl font-bold mb-4">Activity: Run Stacking</h2>
+            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Try stacking blocks across different positions.</p>
             
             <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
               <div className="bg-background border border-border p-8 rounded-3xl w-full shadow-inner flex flex-col">
@@ -1364,7 +1364,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
                 <div className="space-y-6">
 
                   <div className="w-full flex flex-col gap-3 relative z-20 text-left border p-4 rounded-xl">
-                    <h3 className="font-bold text-sm uppercase text-brand tracking-wider">Mix Stack</h3>
+                    <h3 className="font-bold text-sm uppercase text-brand tracking-wider">Stack Blocks</h3>
                     <div>
                       <label className="text-xs text-muted-foreground block mb-1">Block 1 Destination</label>
                       <CustomSelect value={mix1} onChange={setMix1} options={mixLocationOptions} />
@@ -1382,7 +1382,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
                       className={`w-full py-3 mt-1 font-bold bg-brand text-brand-foreground rounded-xl transition-all ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
                       disabled={running}
                     >
-                      {running ? 'Running...' : 'Mix Stack'}
+                      {running ? 'Running...' : 'Stack Blocks'}
                     </button>
                   </div>
                 </div>
@@ -1401,7 +1401,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
       {currentStep === 1 && (
         <Reveal delay={0.1}>
           <CodingChallenge 
-            question="If you want to mix 3 blocks to Position 1, Red bin, and Position 2 respectively, what command should be sent to the Arduino server?"
+            question="If you want to move 3 blocks to Position 1, Red bin, and Position 2 respectively, what command should be sent to the Arduino server?"
             codeSnippet={`function sendMix() {\n  const spots = ['number1', 'red', 'number2'];\n  sendCommand('mix ' + spots.join(' '));\n}`}
             options={[
               `mix red number1 number2`,
