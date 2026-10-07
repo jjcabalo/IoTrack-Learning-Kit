@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { BlobsBackground, FloatingParticles } from '../components/BackgroundElements';
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from 'framer-motion';
-import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, CheckCircle2, Circle, Award, Globe, HelpCircle, User, MessageSquare, Play, FileText, ClipboardList, ThumbsUp, ThumbsDown, Flag, Bookmark, ArrowRight, Video, Target, BookOpen, Lock, Menu, Wifi, Radar, Cpu, Radio, Zap, Cog, ScanLine, Battery, CircuitBoard, Cable, Bot } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, CheckCircle2, Circle, Award, Globe, HelpCircle, User, MessageSquare, Play, FileText, ClipboardList, ThumbsUp, ThumbsDown, Flag, Bookmark, ArrowRight, Video, Target, BookOpen, Lock, Menu, Wifi, Radar, Cpu, Radio, Zap, Cog, ScanLine, Battery, CircuitBoard, Cable, Bot, Code, Terminal } from 'lucide-react';
 import NameModal from '../components/NameModal';
 import { useScore } from '../context/ScoreContext';
 
@@ -221,10 +221,10 @@ export const COURSE_MODULES = [
   { id: 'overview', num: 'Welcome', title: 'Course Overview', items: [{ title: 'Overview', icon: <Globe className="w-4 h-4"/>, meta: 'Start Here' }] },
   { id: 'pretest', num: 'Assessment', title: 'Course Pre-Test', items: [{ title: 'Pre-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
   { id: 1, title: 'IoTrack Introduction', items: [{ title: 'What is IoTrack', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'What is IoT', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'The Hardware behind the kit', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }, { title: 'Prerequisite Activity', icon: <Play className="w-4 h-4"/>, meta: 'Activity' }] },
-  { id: 2, title: 'Robot Arm Control', items: [{ title: 'How the robotic arm works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Robotic arm movement', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
+  { id: 2, title: 'Robot Arm Control', items: [{ title: 'How the robotic arm works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Robotic arm movement', icon: <Play className="w-4 h-4"/>, meta: 'Interactive Demo' }, { title: 'Coding Challenge', icon: <Code className="w-4 h-4"/>, meta: 'Challenge' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 3, title: 'Sensors & Data', items: [{ title: 'How the sensors works', icon: <BookOpen className="w-4 h-4"/>, meta: 'Reading' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
-  { id: 4, title: 'Color Detection', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
-  { id: 5, title: 'Stacking', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
+  { id: 4, title: 'Color Detection', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Coding Challenge', icon: <Code className="w-4 h-4"/>, meta: 'Challenge' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
+  { id: 5, title: 'Stacking', items: [{ title: 'Interactive Demo', icon: <Play className="w-4 h-4"/>, meta: 'Demo' }, { title: 'Coding Challenge', icon: <Code className="w-4 h-4"/>, meta: 'Challenge' }, { title: 'Quick Check', icon: <ClipboardList className="w-4 h-4"/>, meta: 'Activity' }] },
   { id: 'posttest', num: 'Assessment', title: 'Course Post-Test', items: [{ title: 'Post-Test', icon: <FileText className="w-4 h-4"/>, meta: 'Form • 5 min' }] },
   { id: 'endofcourse', num: 'Finish', title: 'Course Completion', items: [{ title: 'Submit Course', icon: <CheckCircle2 className="w-4 h-4"/>, meta: 'Submit' }] },
 ];
@@ -509,6 +509,60 @@ function ContentActions({ nextTitle, onNext, isLast, canProceed = true }) {
   );
 }
 
+function CodingChallenge({ question, codeSnippet, options, correctAnswerIndex }) {
+  const [selected, setSelected] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+
+  const handleSelect = (index) => {
+    setSelected(index);
+    setIsCorrect(index === correctAnswerIndex);
+  };
+
+  return (
+    <div className="glass border-t-4 border-t-brand rounded-2xl p-6 md:p-10 shadow-glow relative overflow-hidden">
+      <div className="flex items-center gap-3 mb-6 relative z-10">
+        <div className="w-12 h-12 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft">
+          <Code className="w-6 h-6" />
+        </div>
+        <h2 className="text-3xl font-bold">Coding Challenge</h2>
+      </div>
+      <p className="text-lg text-muted-foreground mb-6 relative z-10">{question}</p>
+      
+      {codeSnippet && (
+        <div className="bg-[#1e1e1e] p-5 rounded-xl border border-border/50 mb-8 overflow-x-auto shadow-inner relative z-10">
+          <pre className="text-green-400 font-mono text-sm"><code>{codeSnippet}</code></pre>
+        </div>
+      )}
+
+      <div className="space-y-4 relative z-10">
+        {options.map((opt, i) => (
+          <button 
+            key={i}
+            onClick={() => handleSelect(i)}
+            disabled={selected !== null}
+            className={`w-full text-left p-5 rounded-xl border-2 transition-all font-mono text-sm md:text-base ${
+              selected === null ? 'border-border bg-background hover:border-brand hover:shadow-soft' :
+              i === correctAnswerIndex ? 'border-green-500 bg-green-500/10 text-green-700 dark:text-green-400 font-bold' :
+              selected === i ? 'border-red-500 bg-red-500/10 text-red-700 dark:text-red-400' :
+              'border-border bg-background opacity-50'
+            }`}
+          >
+            {opt}
+            {selected !== null && i === correctAnswerIndex && <CheckCircle2 className="w-5 h-5 inline float-right text-green-500" />}
+            {selected === i && i !== correctAnswerIndex && <X className="w-5 h-5 inline float-right text-red-500" />}
+          </button>
+        ))}
+      </div>
+      
+      {selected !== null && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`mt-6 p-4 rounded-xl border ${isCorrect ? 'bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-700 dark:text-red-400'}`}>
+          <p className="font-bold">{isCorrect ? 'Correct! Great job.' : 'Not quite right. Review the code structure and try again later.'}</p>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 function QuickCheck({ moduleId, questions }) {
   const { recordAnswer, scores, isDone } = useScore();
 
@@ -775,6 +829,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
     { question: "If you tell the servo to move to 90°, what happens?", options: [{text: "It spins 90 times per second", isCorrect: false}, {text: "It moves to the 90° position and holds it", isCorrect: true}, {text: "It powers off for 90 seconds", isCorrect: false}] }
   ];
 
+  const [stepAngle, setStepAngle] = useState(5);
   const sendCommand = async (commandString) => {
     setCmd(commandString);
     setStatus('Sending...');
@@ -783,16 +838,22 @@ function Module2({ currentStep, onNext, nextTitle }) {
     try {
       const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(commandString));
       if (!response.ok) throw new Error("Failed");
+      const data = await response.text();
       
       setStatus('Ready');
-      setLog(prev => [...prev, `✓ Success: ${commandString}`].slice(-6));
+      setLog(prev => [...prev, `✓ ${data}`].slice(-6));
     } catch (error) {
-      setStatus('Ready'); // Revert to ready, no error messages
+      setStatus('Error');
+      setLog(prev => [...prev, `✗ Connection failed`].slice(-6));
     }
   };
 
+  const handleSetStep = () => {
+    sendCommand(`step ${stepAngle}`);
+  };
+
   const { scores } = useScore();
-  const canProceed = currentStep !== 2 || q2.every((_, idx) => scores['m2']?.[idx]);
+  const canProceed = currentStep !== 3 || q2.every((_, idx) => scores['m2']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -822,6 +883,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
                 <div className="flex-1 space-y-4">
                   <h3 className="text-2xl font-bold text-brand">Base & Shoulder</h3>
                   <p className="text-lg text-muted-foreground leading-relaxed">The base rotates left and right, while the shoulder tilts the entire arm assembly forward and backward.</p>
+                  <p className="text-sm font-mono text-brand bg-brand/10 inline-block px-2 py-1 rounded">Base: 0&deg; to 180&deg; | Shoulder: 60&deg; (Up) to 145&deg; (Down)</p>
                 </div>
                 <div className="flex-1 w-full flex justify-center">
                   <img src="/module-images/Base%20%26%20Shoulder.svg" alt="Base & Shoulder" className="w-full max-w-md object-contain" onError={(e) => { e.target.style.display='none'; }} />
@@ -834,6 +896,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
                 <div className="flex-1 space-y-4">
                   <h3 className="text-2xl font-bold text-brand">Elbow & Claw</h3>
                   <p className="text-lg text-muted-foreground leading-relaxed">The elbow bends the middle joint, and the claw (gripper) opens and closes to grab objects.</p>
+                  <p className="text-sm font-mono text-brand bg-brand/10 inline-block px-2 py-1 rounded">Elbow: 60&deg; (Down) to 145&deg; (Up) | Claw: 116&deg; (Closed) to 145&deg; (Open)</p>
                 </div>
                 <div className="flex-1 w-full flex justify-center">
                   <img src="/module-images/Elbow%20%26%20Claw.svg" alt="Elbow & Claw" className="w-full max-w-md object-contain" onError={(e) => { e.target.style.display='none'; }} />
@@ -849,7 +912,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
           <div className="glass border-t-4 border-t-brand rounded-2xl p-8 shadow-glow relative overflow-hidden">
             <div className="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center font-bold shadow-soft mb-4 relative z-10"><Play className="w-5 h-5" fill="currentColor"/></div>
             <h2 className="text-2xl font-bold mb-4 relative z-10">Activity: Manual Controller</h2>
-            <p className="text-muted-foreground mb-6 text-base relative z-10">Use these controls to jog each joint individually by a small amount (5&deg; per tap).</p>
+            <p className="text-muted-foreground mb-6 text-base relative z-10">Set your step angle and use these controls to jog each joint individually.</p>
             
             <div className="grid md:grid-cols-2 gap-10 mt-2 relative z-10">
               <div className="bg-background rounded-3xl p-6 border border-border shadow-inner flex flex-col gap-4">
@@ -863,6 +926,20 @@ function Module2({ currentStep, onNext, nextTitle }) {
                     placeholder="e.g. 192.168.1.10"
                     className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
                   />
+                </div>
+
+                <div className="flex items-end gap-3 mt-2">
+                  <div className="flex-1">
+                    <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Step Angle (&deg;)</label>
+                    <input 
+                      type="number" 
+                      value={stepAngle} 
+                      onChange={(e) => setStepAngle(e.target.value)} 
+                      min="1" max="180"
+                      className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
+                    />
+                  </div>
+                  <button onClick={handleSetStep} className="px-4 py-3 bg-brand text-brand-foreground font-bold rounded-xl shadow-sm hover:bg-brand/90 transition-all">Set</button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 mt-2">
@@ -894,6 +971,22 @@ function Module2({ currentStep, onNext, nextTitle }) {
       )}
 
       {currentStep === 2 && (
+        <Reveal delay={0.1}>
+          <CodingChallenge 
+            question="If you want to set the jog angle to 15 degrees, which command sends the correct instruction to the robotic arm?"
+            codeSnippet={`function setStep() {\n  const deg = 15;\n  // What goes here?\n}`}
+            options={[
+              `unoSerial.print("15");`,
+              `sendCommand('step ' + deg);`,
+              `fetch('/setAngle?val=' + deg);`,
+              `sendCommand('base 15');`
+            ]}
+            correctAnswerIndex={1}
+          />
+        </Reveal>
+      )}
+
+      {currentStep === 3 && (
         <Reveal delay={0.1}>
           <QuickCheck moduleId="m2" questions={q2} />
         </Reveal>
@@ -977,12 +1070,22 @@ function Module4({ currentStep, onNext, nextTitle }) {
     { question: "What happens if the color sensor is unplugged during sorting?", options: [{text: "It continues sorting perfectly", isCorrect: false}, {text: "It will fail to determine the color and won't know where to place the block", isCorrect: true}, {text: "It will explode", isCorrect: false}] }
   ];
 
+  const [log, setLog] = useState(['Waiting for sequence start...']);
+
   const runSorting = async () => {
     setRunning(true);
     setColor('scanning');
+    setLog(prev => [...prev, `→ colorsort`].slice(-6));
     
-    // Fire the command to the robot but don't let it block the animation
-    fetch(`http://${robotIp}/cmd?value=colorsort`).catch(() => {});
+    try {
+      const response = await fetch(`http://${robotIp}/cmd?value=colorsort`);
+      if (response.ok) {
+        const data = await response.text();
+        setLog(prev => [...prev, `✓ ${data}`].slice(-6));
+      }
+    } catch (e) {
+      setLog(prev => [...prev, `✗ Connection failed`].slice(-6));
+    }
     
     await wait(1000);
     const colors = ['red', 'green', 'blue'];
@@ -994,7 +1097,7 @@ function Module4({ currentStep, onNext, nextTitle }) {
   };
 
   const { scores } = useScore();
-  const canProceed = currentStep !== 1 || q4.every((_, idx) => scores['m4']?.[idx]);
+  const canProceed = currentStep !== 2 || q4.every((_, idx) => scores['m4']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -1013,37 +1116,43 @@ function Module4({ currentStep, onNext, nextTitle }) {
             <h2 className="text-2xl font-bold mb-4">Activity: Run Sorting</h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Click below to command the robot to pick a block, read its color, and place it in the correct bin based on what it senses.</p>
             
-            <div className="bg-background border border-border p-8 rounded-3xl max-w-sm mx-auto shadow-inner relative flex flex-col gap-6">
-              
-              <div className="text-left w-full">
-                <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Robot IP Address</label>
-                <input 
-                  type="text" 
-                  value={robotIp} 
-                  onChange={(e) => setRobotIp(e.target.value)} 
-                  placeholder="e.g. 192.168.1.10"
-                  className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
-                />
+            <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
+              <div className="bg-background border border-border p-8 rounded-3xl w-full shadow-inner relative flex flex-col gap-6">
+                <div className="text-left w-full">
+                  <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Robot IP Address</label>
+                  <input 
+                    type="text" 
+                    value={robotIp} 
+                    onChange={(e) => setRobotIp(e.target.value)} 
+                    placeholder="e.g. 192.168.1.10"
+                    className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
+                  />
+                </div>
+
+                <div className={`w-32 h-32 mx-auto rounded-full border-8 flex items-center justify-center shadow-inner transition-colors duration-500
+                  ${color === 'none' ? 'bg-muted border-border' : ''}
+                  ${color === 'scanning' ? 'bg-brand/20 border-brand animate-pulse' : ''}
+                  ${color === 'red' ? 'bg-red-500 border-red-600 shadow-[0_0_30px_rgba(239,68,68,0.5)]' : ''}
+                  ${color === 'green' ? 'bg-green-500 border-green-600 shadow-[0_0_30px_rgba(34,197,94,0.5)]' : ''}
+                  ${color === 'blue' ? 'bg-blue-500 border-blue-600 shadow-[0_0_30px_rgba(59,130,246,0.5)]' : ''}
+                `}>
+                  {color === 'scanning' && <ScanLine className="w-12 h-12 text-brand animate-spin" />}
+                  {color !== 'scanning' && color !== 'none' && <CheckCircle2 className="w-12 h-12 text-white" />}
+                </div>
+                
+                <button 
+                  onClick={runSorting} 
+                  className={`w-full py-4 text-lg font-bold bg-brand text-brand-foreground rounded-2xl transition-all ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
+                  disabled={running}
+                >
+                  {running ? 'Running Sequence...' : 'Start Color Sort'}
+                </button>
               </div>
 
-              <div className={`w-32 h-32 mx-auto rounded-full border-8 flex items-center justify-center shadow-inner transition-colors duration-500
-                ${color === 'none' ? 'bg-muted border-border' : ''}
-                ${color === 'scanning' ? 'bg-brand/20 border-brand animate-pulse' : ''}
-                ${color === 'red' ? 'bg-red-500 border-red-600 shadow-[0_0_30px_rgba(239,68,68,0.5)]' : ''}
-                ${color === 'green' ? 'bg-green-500 border-green-600 shadow-[0_0_30px_rgba(34,197,94,0.5)]' : ''}
-                ${color === 'blue' ? 'bg-blue-500 border-blue-600 shadow-[0_0_30px_rgba(59,130,246,0.5)]' : ''}
-              `}>
-                {color === 'scanning' && <ScanLine className="w-12 h-12 text-brand animate-spin" />}
-                {color !== 'scanning' && color !== 'none' && <CheckCircle2 className="w-12 h-12 text-white" />}
+              <div className="bg-[#0a0a0a] border border-border/50 text-green-400 p-5 rounded-2xl font-mono text-sm h-full overflow-y-auto shadow-inner flex flex-col justify-end text-left">
+                <div className="text-muted-foreground mb-2 opacity-50">Terminal Output //</div>
+                {log.map((l, i) => <div key={i} className={`mb-1 opacity-90 hover:opacity-100 ${l.includes('✗') ? 'text-red-400' : ''}`}>{l}</div>)}
               </div>
-              
-              <button 
-                onClick={runSorting} 
-                className={`w-full py-4 text-lg font-bold bg-brand text-brand-foreground rounded-2xl transition-all ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
-                disabled={running}
-              >
-                {running ? 'Running Sequence...' : 'Start Color Sort'}
-              </button>
             </div>
           </div>
         </Reveal>
@@ -1051,11 +1160,27 @@ function Module4({ currentStep, onNext, nextTitle }) {
 
       {currentStep === 1 && (
         <Reveal delay={0.1}>
+          <CodingChallenge 
+            question="Which command properly triggers the color sorting routine on the Arduino server?"
+            codeSnippet={`function runSorting() {\n  // What goes here?\n}`}
+            options={[
+              `fetch('/cmd?value=colorsort');`,
+              `fetch('/cmd?value=mix');`,
+              `unoSerial.print("sort");`,
+              `fetch('/colorsort');`
+            ]}
+            correctAnswerIndex={0}
+          />
+        </Reveal>
+      )}
+
+      {currentStep === 2 && (
+        <Reveal delay={0.1}>
           <QuickCheck moduleId="m4" questions={q4} />
         </Reveal>
       )}
 
-      <ContentActions nextTitle={nextTitle} onNext={onNext} />
+      <ContentActions nextTitle={nextTitle} onNext={onNext} canProceed={canProceed} />
     </motion.div>
   );
 }
@@ -1118,6 +1243,11 @@ function Module5({ currentStep, onNext, nextTitle }) {
   const [location, setLocation] = useState('number1');
   const [count, setCount] = useState('3');
   const [robotIp, setRobotIp] = useState('192.168.x.x');
+  
+  const [mix1, setMix1] = useState('number2');
+  const [mix2, setMix2] = useState('number1');
+  const [mix3, setMix3] = useState('number1');
+  const [log, setLog] = useState(['Waiting for sequence start...']);
 
   const q5 = [
     { question: "What kind of sequence is stacking if it doesn't use the color sensor?", options: [{text: "Open-loop", isCorrect: true}, {text: "Closed-loop", isCorrect: false}, {text: "Random", isCorrect: false}] },
@@ -1132,9 +1262,12 @@ function Module5({ currentStep, onNext, nextTitle }) {
     setBlocks(0);
     
     const cmd = `stack ${location} ${count}`;
+    setLog(prev => [...prev, `→ ${cmd}`].slice(-6));
     try {
       const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(cmd));
       if (!response.ok) throw new Error("Failed");
+      const data = await response.text();
+      setLog(prev => [...prev, `✓ ${data}`].slice(-6));
       
       const countNum = parseInt(count);
       for(let i=1; i<=countNum; i++) {
@@ -1142,7 +1275,30 @@ function Module5({ currentStep, onNext, nextTitle }) {
         setBlocks(i);
       }
     } catch (error) {
-      // Ignore errors silently as requested
+      setLog(prev => [...prev, `✗ Connection failed`].slice(-6));
+    }
+    setRunning(false);
+  };
+
+  const runMix = async () => {
+    setRunning(true);
+    setBlocks(0);
+    const spots = [mix1, mix2, mix3].filter(v => v !== '');
+    const cmd = `mix ` + spots.join(' ');
+    
+    setLog(prev => [...prev, `→ ${cmd}`].slice(-6));
+    try {
+      const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(cmd));
+      if (!response.ok) throw new Error("Failed");
+      const data = await response.text();
+      setLog(prev => [...prev, `✓ ${data}`].slice(-6));
+      
+      for(let i=1; i<=spots.length; i++) {
+        await wait(800);
+        setBlocks(i);
+      }
+    } catch (error) {
+      setLog(prev => [...prev, `✗ Connection failed`].slice(-6));
     }
     setRunning(false);
   };
@@ -1152,7 +1308,15 @@ function Module5({ currentStep, onNext, nextTitle }) {
     { value: 'number2', label: 'Position 2' },
     { value: 'number3', label: 'Position 3' },
     { value: 'number4', label: 'Position 4' },
-    { value: 'number5', label: 'Position 5' }
+    { value: 'number5', label: 'Position 5' },
+    { value: 'red', label: 'Red' },
+    { value: 'green', label: 'Green' },
+    { value: 'blue', label: 'Blue' }
+  ];
+
+  const mixLocationOptions = [
+    { value: '', label: 'None' },
+    ...locationOptions
   ];
 
   const countOptions = [
@@ -1162,7 +1326,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
   ];
 
   const { scores } = useScore();
-  const canProceed = currentStep !== 1 || q5.every((_, idx) => scores['m5']?.[idx]);
+  const canProceed = currentStep !== 2 || q5.every((_, idx) => scores['m5']?.[idx]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-20">
@@ -1178,21 +1342,13 @@ function Module5({ currentStep, onNext, nextTitle }) {
       {currentStep === 0 && (
         <Reveal delay={0.2}>
           <div className="glass border-t-4 border-t-brand rounded-2xl p-10 shadow-soft text-center">
-            <h2 className="text-2xl font-bold mb-4">Activity: Run Stacking</h2>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">This triggers a pre-programmed sequence. The robot moves exactly where it's told, stacking blocks one by one.</p>
+            <h2 className="text-2xl font-bold mb-4">Activity: Run Stacking & Mixing</h2>
+            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-base md:text-lg">Try stacking blocks in one location, or mixing them across different positions.</p>
             
-            <div className="bg-background border border-border p-8 rounded-3xl max-w-sm mx-auto shadow-inner flex flex-col h-auto">
-              
-              <div className="w-full flex flex-col justify-end items-center relative min-h-[12rem] mb-6 border-b-4 border-border pb-1">
-                <AnimatePresence>
-                  {blocks >= 1 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-blue-500 rounded border-2 border-blue-600 shadow-sm relative z-10 -mb-1 mx-auto"></motion.div>}
-                  {blocks >= 2 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-green-500 rounded border-2 border-green-600 shadow-sm relative z-10 -mb-1 mx-auto"></motion.div>}
-                  {blocks >= 3 && <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-20 h-16 bg-red-500 rounded border-2 border-red-600 shadow-sm relative z-10 mx-auto"></motion.div>}
-                </AnimatePresence>
-              </div>
-
-              <div className="w-full flex flex-col gap-3 relative z-20 text-left">
-                <div>
+            <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
+              <div className="bg-background border border-border p-8 rounded-3xl w-full shadow-inner flex flex-col">
+                
+                <div className="text-left w-full mb-8">
                   <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Robot IP Address</label>
                   <input 
                     type="text" 
@@ -1202,22 +1358,40 @@ function Module5({ currentStep, onNext, nextTitle }) {
                     className="w-full p-3 rounded-xl border border-border bg-transparent text-foreground text-sm focus:ring-2 focus:ring-brand focus:border-brand transition-all shadow-sm outline-none font-mono" 
                   />
                 </div>
-                <div>
-                  <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Stack Location</label>
-                  <CustomSelect value={location} onChange={setLocation} options={locationOptions} />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-muted-foreground mb-1 block uppercase tracking-wide">Number of Blocks</label>
-                  <CustomSelect value={count} onChange={setCount} options={countOptions} />
+
+                <hr className="border-border mb-8 w-full" />
+
+                <div className="space-y-6">
+
+                  <div className="w-full flex flex-col gap-3 relative z-20 text-left border p-4 rounded-xl">
+                    <h3 className="font-bold text-sm uppercase text-brand tracking-wider">Mix Stack</h3>
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Block 1 Destination</label>
+                      <CustomSelect value={mix1} onChange={setMix1} options={mixLocationOptions} />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Block 2 Destination</label>
+                      <CustomSelect value={mix2} onChange={setMix2} options={mixLocationOptions} />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Block 3 Destination</label>
+                      <CustomSelect value={mix3} onChange={setMix3} options={mixLocationOptions} />
+                    </div>
+                    <button 
+                      onClick={runMix} 
+                      className={`w-full py-3 mt-1 font-bold bg-brand text-brand-foreground rounded-xl transition-all ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
+                      disabled={running}
+                    >
+                      {running ? 'Running...' : 'Mix Stack'}
+                    </button>
+                  </div>
                 </div>
 
-                <button 
-                  onClick={runStacking} 
-                  className={`w-full py-4 mt-2 text-lg font-bold bg-brand text-brand-foreground rounded-2xl transition-all ${running ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand/90 hover:shadow-glow'}`}
-                  disabled={running}
-                >
-                  {running ? 'Stacking...' : 'Stack'}
-                </button>
+              </div>
+
+              <div className="bg-[#0a0a0a] border border-border/50 text-green-400 p-5 rounded-2xl font-mono text-sm h-full overflow-y-auto shadow-inner flex flex-col justify-end text-left">
+                <div className="text-muted-foreground mb-2 opacity-50">Terminal Output //</div>
+                {log.map((l, i) => <div key={i} className={`mb-1 opacity-90 hover:opacity-100 ${l.includes('✗') ? 'text-red-400' : ''}`}>{l}</div>)}
               </div>
             </div>
           </div>
@@ -1225,6 +1399,22 @@ function Module5({ currentStep, onNext, nextTitle }) {
       )}
 
       {currentStep === 1 && (
+        <Reveal delay={0.1}>
+          <CodingChallenge 
+            question="If you want to mix 3 blocks to Position 1, Red bin, and Position 2 respectively, what command should be sent to the Arduino server?"
+            codeSnippet={`function sendMix() {\n  const spots = ['number1', 'red', 'number2'];\n  sendCommand('mix ' + spots.join(' '));\n}`}
+            options={[
+              `mix red number1 number2`,
+              `mix number1 red number2`,
+              `stack number1 red number2`,
+              `mix 1 red 2`
+            ]}
+            correctAnswerIndex={1}
+          />
+        </Reveal>
+      )}
+
+      {currentStep === 2 && (
         <Reveal delay={0.1}>
           <QuickCheck moduleId="m5" questions={q5} />
         </Reveal>
