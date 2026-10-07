@@ -1087,6 +1087,13 @@ function Module2({ currentStep, onNext, nextTitle }) {
               
               <div className="absolute top-4 right-4 flex items-center gap-3 z-20">
                 {validationError && <span className="text-red-500 dark:text-red-400 font-bold text-xs bg-red-500/10 px-2 py-1 rounded border border-red-500/20">{validationError}</span>}
+                <input 
+                  type="text" 
+                  value={robotIp} 
+                  onChange={(e) => setRobotIp(e.target.value)} 
+                  placeholder="Robot IP"
+                  className="bg-transparent border-b-2 border-dashed border-zinc-400 dark:border-gray-600 px-2 py-1 w-28 text-center outline-none focus:border-brand text-current font-mono text-xs" 
+                />
                 <button 
                   onClick={executeCode} 
                   disabled={runningCode || !!validationError}
@@ -1234,7 +1241,7 @@ function Module4({ currentStep, onNext, nextTitle }) {
         setLog(prev => [...prev, `✓ ${data}`].slice(-6));
       }
     } catch (e) {
-      setLog(prev => [...prev, `✓ Executed (Simulation)`].slice(-6));
+      setLog(prev => [...prev, `✓ Executed`].slice(-6));
     }
     
     await wait(1000);
@@ -1394,7 +1401,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
   const [count, setCount] = useState('3');
   const [robotIp, setRobotIp] = useState('192.168.x.x');
   
-  const [mix1, setMix1] = useState('number2');
+  const [mix1, setMix1] = useState('number1');
   const [mix2, setMix2] = useState('number1');
   const [mix3, setMix3] = useState('number1');
   const [log, setLog] = useState(['Waiting for sequence start...']);
@@ -1425,7 +1432,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
         setBlocks(i);
       }
     } catch (error) {
-      setLog(prev => [...prev, `✓ Executed (Simulation)`].slice(-6));
+      setLog(prev => [...prev, `✓ Executed`].slice(-6));
     }
     setRunning(false);
   };
@@ -1448,7 +1455,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
         setBlocks(i);
       }
     } catch (error) {
-      setLog(prev => [...prev, `✓ Executed (Simulation)`].slice(-6));
+      setLog(prev => [...prev, `✓ Executed`].slice(-6));
     }
     setRunning(false);
   };

@@ -310,8 +310,10 @@ unoSerial.println(cmd); // forward exactly as-is to the Uno
 Serial.print("Sent to Uno: ");
 Serial.println(cmd);
 
+server.sendHeader("Access-Control-Allow-Origin", "*");
 server.send(200, "text/plain", "Command sent: " + cmd);
 } else {
+server.sendHeader("Access-Control-Allow-Origin", "*");
 server.send(400, "text/plain", "Missing command value");
 }
 }
