@@ -529,8 +529,8 @@ function CodingChallenge({ question, codeSnippet, options, correctAnswerIndex })
       <p className="text-lg text-muted-foreground mb-6 relative z-10">{question}</p>
       
       {codeSnippet && (
-        <div className="bg-[#1e1e1e] p-5 rounded-xl border border-border/50 mb-8 overflow-x-auto shadow-inner relative z-10">
-          <pre className="text-green-400 font-mono text-sm"><code>{codeSnippet}</code></pre>
+        <div className="bg-slate-100 dark:bg-[#1e1e1e] p-5 rounded-xl border border-border/50 mb-8 overflow-x-auto shadow-inner relative z-10">
+          <pre className="text-emerald-700 dark:text-green-400 font-mono text-sm"><code>{codeSnippet}</code></pre>
         </div>
       )}
 
@@ -1292,7 +1292,7 @@ function Module4({ currentStep, onNext, nextTitle }) {
                 </button>
               </div>
 
-              <div className="bg-[#0a0a0a] border border-border/50 text-green-400 p-5 rounded-2xl font-mono text-sm h-full overflow-y-auto shadow-inner flex flex-col justify-end text-left">
+              <div className="bg-slate-100 dark:bg-[#0a0a0a] border border-border/50 text-emerald-700 dark:text-green-400 p-5 rounded-2xl font-mono text-sm h-full overflow-y-auto shadow-inner flex flex-col justify-end text-left">
                 <div className="text-muted-foreground mb-2 opacity-50">Terminal Output //</div>
                 {log.map((l, i) => <div key={i} className={`mb-1 opacity-90 hover:opacity-100 ${l.includes('✗') ? 'text-red-600 dark:text-red-400' : ''}`}>{l}</div>)}
               </div>
@@ -1529,7 +1529,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
 
               </div>
 
-              <div className="bg-[#0a0a0a] border border-border/50 text-green-400 p-5 rounded-2xl font-mono text-sm h-full overflow-y-auto shadow-inner flex flex-col justify-end text-left">
+              <div className="bg-slate-100 dark:bg-[#0a0a0a] border border-border/50 text-emerald-700 dark:text-green-400 p-5 rounded-2xl font-mono text-sm h-full overflow-y-auto shadow-inner flex flex-col justify-end text-left">
                 <div className="text-muted-foreground mb-2 opacity-50">Terminal Output //</div>
                 {log.map((l, i) => <div key={i} className={`mb-1 opacity-90 hover:opacity-100 ${l.includes('✗') ? 'text-red-600 dark:text-red-400' : ''}`}>{l}</div>)}
               </div>
