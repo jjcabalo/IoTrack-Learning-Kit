@@ -1451,10 +1451,7 @@ function Module5({ currentStep, onNext, nextTitle }) {
     { value: 'number2', label: 'Position 2' },
     { value: 'number3', label: 'Position 3' },
     { value: 'number4', label: 'Position 4' },
-    { value: 'number5', label: 'Position 5' },
-    { value: 'red', label: 'Red' },
-    { value: 'green', label: 'Green' },
-    { value: 'blue', label: 'Blue' }
+    { value: 'number5', label: 'Position 5' }
   ];
 
   const mixLocationOptions = [
