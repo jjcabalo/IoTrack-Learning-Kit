@@ -921,32 +921,20 @@ function Module2({ currentStep, onNext, nextTitle }) {
     setLog(prev => [...prev, `[IDE] Executing custom code...`].slice(-6));
     
     const vals = { base: parseInt(codeBase), shoulder: parseInt(codeShoulder), elbow: parseInt(codeElbow), claw: parseInt(codeClaw) };
-    const commands = [];
-    if (codeBase) commands.push(`base ${codeBase}`);
-    if (codeShoulder) commands.push(`shoulder ${codeShoulder}`);
-    if (codeElbow) commands.push(`elbow ${codeElbow}`);
-    if (codeClaw) commands.push(`claw ${codeClaw}`);
-
-    for (let i = 0; i < commands.length; i++) {
-      const c = commands[i];
-      setCmd(c);
-      setStatus('Sending...');
-      setLog(prev => [...prev, `→ ${c}`].slice(-6));
-      
-      try {
-        const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(c));
-        if (!response.ok) throw new Error("Failed");
-        const data = await response.text();
-        setStatus('Ready');
-        setLog(prev => [...prev, `✓ ${data}`].slice(-6));
-      } catch (error) {
-        setStatus('Ready');
-        setLog(prev => [...prev, `✓ Executed`].slice(-6));
-      }
-      
-      if (i < commands.length - 1) {
-        await new Promise(r => setTimeout(r, 400)); 
-      }
+    const cmdStr = `angles ${codeBase || '-'} ${codeShoulder || '-'} ${codeElbow || '-'} ${codeClaw || '-'}`;
+    setCmd(cmdStr);
+    setStatus('Sending...');
+    setLog(prev => [...prev, `→ ${cmdStr}`].slice(-6));
+    
+    try {
+      const response = await fetch(`http://${robotIp}/cmd?value=` + encodeURIComponent(cmdStr));
+      if (!response.ok) throw new Error("Failed");
+      const data = await response.text();
+      setStatus('Ready');
+      setLog(prev => [...prev, `✓ ${data}`].slice(-6));
+    } catch (error) {
+      setStatus('Ready');
+      setLog(prev => [...prev, `✓ Executed`].slice(-6));
     }
     
     setPos({ base: vals.base, shoulder: vals.shoulder, elbow: vals.elbow, claw: vals.claw });
@@ -1110,9 +1098,7 @@ function Module2({ currentStep, onNext, nextTitle }) {
                 <div className="text-gray-500 dark:text-gray-400">const int elbowMin    = 60,  elbowMax    = 145;  <span className="text-gray-400 dark:text-gray-500">// 60 = down, 145 = up</span></div>
                 <div className="text-gray-500 dark:text-gray-400 mb-4">const int clawMin     = 116, clawMax     = 145;  <span className="text-gray-400 dark:text-gray-500">// 116 = closed, 145 = open</span></div>
 
-                <div className="text-gray-500 dark:text-gray-500 mb-2">// Home position (base, shoulder, elbow, claw)</div>
-                <div className="text-gray-500 dark:text-gray-400 mb-6">const int homeBase = 90, homeShoulder = 60, homeElbow = 60, homeClaw = 120;</div>
-
+                
                 <div className="text-gray-500 dark:text-gray-500 mb-2">// Servo Controls (base, shoulder, elbow, claw)</div>
                 <div className="flex items-center gap-2 flex-wrap text-zinc-800 dark:text-green-400 font-bold">
                   <span className="text-blue-600 dark:text-blue-400 font-normal">const int</span> 
